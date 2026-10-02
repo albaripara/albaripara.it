@@ -91,6 +91,32 @@ document.addEventListener("DOMContentLoaded", () => {
     "iPhone 16 Pro Max": { displayRigenerato: 290, displayOriginale: 400, batteria: 115, batteriaOriginale: 135, ricarica: 140, camera: 150 }
   };
 
+  // Listino collegato al gestionale: i prezzi sopra sono la riserva se il gestionale non risponde.
+  const LISTINO_URL = "https://gestionale-riparazioni.vercel.app/api/public/listino";
+  const PRICE_KEYS = ["displayRigenerato", "displayOriginale", "batteria", "batteriaOriginale", "ricarica", "camera"];
+  (function loadListino() {
+    if (typeof fetch !== "function") return;
+    const controller = typeof AbortController === "function" ? new AbortController() : null;
+    const timer = controller ? setTimeout(() => controller.abort(), 4000) : null;
+    fetch(LISTINO_URL, { signal: controller ? controller.signal : undefined, credentials: "omit" })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((payload) => {
+        if (!payload || payload.ok !== true || !payload.prices || typeof payload.prices !== "object") return;
+        Object.keys(payload.prices).forEach((name) => {
+          const row = payload.prices[name];
+          if (!row || typeof row !== "object") return;
+          const next = {};
+          PRICE_KEYS.forEach((key) => {
+            const value = Number(row[key]);
+            next[key] = Number.isFinite(value) && value > 0 ? value : null;
+          });
+          iphonePrices[name] = next;
+        });
+      })
+      .catch(() => {})
+      .finally(() => { if (timer) clearTimeout(timer); });
+  })();
+
   const problemNames = {
     display: "Display",
     battery: "Batteria",
@@ -312,14 +338,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const visibleOptions = options.filter(([name, price]) => !(name === "Batteria originale" && price == null));
 
     if (!visibleOptions.length) {
-      const msg = `Ciao ALBA Ripara, vorrei verificare una riparazione per ${selectedModel}. Problema: ${label}.`;
-      return `<div class="solution-actions"><a class="phone-book" href="${escapeHTML(wa(msg))}" target="_blank" rel="noopener noreferrer">Verifica su WhatsApp</a></div>${warrantyNote()}`;
+      const msg = `Ciao ALBA Ripara, vorrei un preventivo per ${selectedModel}. Problema: ${label}.`;
+      return `<p class="quote-in-store"><b>Preventivo in negozio</b></p><div class="solution-actions"><a class="phone-book" href="${escapeHTML(wa(msg))}" target="_blank" rel="noopener noreferrer">Manda un messaggio</a></div>${warrantyNote()}`;
     }
 
     return `<div class="solution-list">` + visibleOptions.map(([name, price, note]) => {
-      const priceText = price == null ? "Da confermare" : `${price}€`;
+      const priceText = price == null ? "Preventivo in negozio" : `${price}€`;
       const msg = price == null
-        ? `Ciao ALBA Ripara, vorrei verificare ${name} per ${selectedModel}. Problema: ${label}. Prezzo da confermare.`
+        ? `Ciao ALBA Ripara, vorrei un preventivo per ${name} su ${selectedModel}. Problema: ${label}.`
         : `Ciao ALBA Ripara, vorrei prenotare la riparazione del mio ${selectedModel}. Problema: ${label}. Soluzione: ${name}. Prezzo visualizzato sul sito: ${price}€.`;
 
       return `<article class="solution-card">
@@ -328,7 +354,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <strong>${escapeHTML(name)}</strong>
         </div>
         <b>${escapeHTML(priceText)}</b>
-        <a href="${escapeHTML(wa(msg))}" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+        <a href="${escapeHTML(wa(msg))}" target="_blank" rel="noopener noreferrer">${price == null ? "Manda un messaggio" : "WhatsApp"}</a>
       </article>`;
     }).join("") + `</div>${warrantyNote()}${changeButton()}`;
   }
