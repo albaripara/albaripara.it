@@ -1,57 +1,67 @@
-/* Sezione "telefono 3D che si smonta" — ALBA Ripara */
-.x3d{position:relative;height:320vh;background:#07100b;color:#f3f8f1;isolation:isolate}
-.x3d-sticky{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
-.x3d-sticky::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background:radial-gradient(60% 55% at 70% 50%,rgba(37,168,78,.30),rgba(15,125,59,.10) 45%,transparent 70%),
-             radial-gradient(40% 40% at 15% 85%,rgba(183,255,90,.08),transparent 70%)}
-.x3d-inner{width:min(1240px,calc(100% - 48px));margin:0 auto;display:grid;grid-template-columns:minmax(300px,440px) 1fr;gap:32px;align-items:center;height:100%;max-height:860px;padding:84px 0 40px;box-sizing:border-box}
+/* Sezione "telefono 3D" — ALBA Ripara */
+.x3d{position:relative;background:#07100b;color:#f3f8f1;padding:84px 0 48px;overflow:hidden;isolation:isolate}
+.x3d::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(55% 60% at 72% 50%,rgba(37,168,78,.30),rgba(15,125,59,.10) 45%,transparent 72%),
+             radial-gradient(40% 40% at 12% 90%,rgba(183,255,90,.07),transparent 70%)}
+.x3d-inner{width:min(1240px,calc(100% - 48px));margin:0 auto;display:grid;grid-template-columns:minmax(300px,460px) 1fr;gap:40px;align-items:center}
 .x3d-eyebrow{margin:0 0 14px;font-size:12px;font-weight:900;letter-spacing:.16em;color:#b7ff5a}
-.x3d h2{margin:0 0 16px;font-size:clamp(34px,4.4vw,58px);line-height:1.02;letter-spacing:-.03em;color:#fff}
-.x3d-lead{margin:0 0 26px;font-size:17px;line-height:1.55;color:rgba(243,248,241,.72)}
-.x3d-steps{list-style:none;margin:0 0 22px;padding:0;display:grid;gap:6px}
-.x3d-step{padding:11px 14px;border-left:3px solid rgba(243,248,241,.14);border-radius:0 12px 12px 0;transition:background .35s,border-color .35s,opacity .35s;opacity:.5}
-.x3d-step strong{display:block;font-size:16px;color:#fff}
-.x3d-step span{display:block;font-size:14px;line-height:1.45;color:rgba(243,248,241,.75);max-height:0;overflow:hidden;transition:max-height .4s ease}
-.x3d-step.is-active{opacity:1;border-color:#b7ff5a;background:rgba(37,168,78,.14)}
-.x3d-step.is-active span{max-height:60px;margin-top:3px}
-.x3d-progress{height:3px;border-radius:3px;background:rgba(243,248,241,.12);overflow:hidden;margin:0 0 24px}
-.x3d-progress span{display:block;height:100%;background:linear-gradient(90deg,#25a84e,#b7ff5a);transform:scaleX(0);transform-origin:left}
-.x3d-stage{position:relative;width:100%;height:100%;min-height:320px}
-.x3d-stage canvas{position:absolute;inset:0;width:100%!important;height:100%!important;display:block;opacity:0;transition:opacity .8s ease}
+.x3d h2{color:#fff!important;font-size:clamp(34px,4.2vw,56px)!important;line-height:1.02!important;letter-spacing:-.03em!important;margin:0 0 12px!important}
+.x3d-lead{margin:0 0 22px;font-size:18px;line-height:1.5;color:rgba(243,248,241,.78)}
+
+.x3d-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+.x3d-chip{appearance:none;border:1px solid rgba(243,248,241,.22);background:rgba(243,248,241,.06);color:#fff;
+  font:inherit;font-size:15px;font-weight:700;padding:10px 16px;border-radius:999px;cursor:pointer;transition:background .2s,border-color .2s,color .2s,transform .15s}
+.x3d-chip:hover{border-color:#b7ff5a}
+.x3d-chip:active{transform:scale(.97)}
+.x3d-chip[aria-pressed="true"]{background:#b7ff5a;border-color:#b7ff5a;color:#07100b}
+.x3d-chip:focus-visible,.x3d-toggle:focus-visible{outline:3px solid #b7ff5a;outline-offset:2px}
+
+.x3d-cards{min-height:112px;margin:0 0 20px}
+.x3d-card{padding:16px 18px;border-radius:16px;background:rgba(37,168,78,.13);border:1px solid rgba(183,255,90,.18);animation:x3dIn .35s ease}
+.x3d-card h3{margin:0 0 4px!important;font-size:18px!important;color:#fff!important}
+.x3d-card p{margin:0;font-size:15px;line-height:1.5;color:rgba(243,248,241,.82)}
+.x3d-card strong{color:#b7ff5a}
+@keyframes x3dIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.x3d-stage-wrap{position:relative;height:min(78vh,640px);min-height:380px}
+.x3d-stage{position:absolute;inset:0}
+.x3d-stage canvas{position:absolute;inset:0;width:100%!important;height:100%!important;display:block;opacity:0;transition:opacity .8s ease;touch-action:pan-y;cursor:grab}
+.x3d-stage canvas:active{cursor:grabbing}
 .x3d-ready .x3d-stage canvas{opacity:1}
 .x3d-status{position:absolute;inset:0;margin:0;display:flex;align-items:center;justify-content:center;font-size:14px;color:rgba(243,248,241,.6)}
-.x3d-credit{position:absolute;right:16px;bottom:10px;margin:0;font-size:11px;color:rgba(243,248,241,.42)}
+
+.x3d-hint{position:absolute;left:50%;bottom:58px;transform:translateX(-50%);margin:0;padding:8px 14px;border-radius:999px;
+  background:rgba(7,16,11,.72);border:1px solid rgba(243,248,241,.16);font-size:14px;font-weight:700;color:#fff;white-space:nowrap;
+  pointer-events:none;opacity:0;transition:opacity .5s}
+.x3d-ready .x3d-hint{opacity:1}
+.x3d-ready .x3d-hint.is-gone{opacity:0}
+.x3d-hint-hand{display:inline-block;animation:x3dSwipe 1.8s ease-in-out infinite}
+@keyframes x3dSwipe{0%,100%{transform:translateX(-6px)}50%{transform:translateX(6px)}}
+
+.x3d-toggle{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);appearance:none;cursor:pointer;
+  border:1px solid rgba(243,248,241,.25);background:transparent;color:#fff;font:inherit;font-size:14px;font-weight:700;padding:8px 16px;border-radius:999px;opacity:0;transition:opacity .5s}
+.x3d-ready .x3d-toggle{opacity:1}
+.x3d-toggle:hover{border-color:#b7ff5a}
+
+.x3d-credit{width:min(1240px,calc(100% - 48px));margin:18px auto 0;font-size:11px;color:rgba(243,248,241,.42);text-align:right}
 .x3d-credit a{color:inherit;text-decoration:underline}
 
-/* Telefono: modello sopra, testo sotto */
+/* Telefono: prima il 3D, sotto pulsanti e testo */
 @media (max-width:860px){
-  .x3d{height:300vh}
-  .x3d-inner{width:calc(100% - 30px);grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto;gap:4px;padding:70px 0 30px;max-height:none}
-  .x3d-stage{grid-row:1;min-height:0}
-  .x3d-copy{grid-row:2}
-  .x3d-eyebrow{margin-bottom:6px}
-  .x3d h2{font-size:30px;margin-bottom:10px}
-  .x3d h2 br{display:none}
-  .x3d-lead{display:none}
-  .x3d-steps{margin-bottom:12px}
-  .x3d-step{display:none;padding:8px 12px}
-  .x3d-step.is-active{display:block}
-  .x3d-progress{margin-bottom:14px}
-  .x3d-cta{width:100%;text-align:center}
-  .x3d-credit{left:15px;right:15px;bottom:8px;text-align:center;font-size:10px}
+  .x3d{padding:56px 0 30px}
+  .x3d-inner{width:calc(100% - 30px);grid-template-columns:1fr;gap:6px}
+  .x3d-stage-wrap{order:-1;height:62vh;min-height:330px;max-height:520px}
+  .x3d h2{font-size:30px!important}
+  .x3d-lead{font-size:16px;margin-bottom:14px}
+  .x3d-chips{gap:6px}
+  .x3d-chip{font-size:14px;padding:9px 13px}
+  .x3d-cta{display:block;text-align:center}
+  .x3d-credit{width:calc(100% - 30px);text-align:center;font-size:10px}
 }
 
-/* Senza 3D (browser vecchi) o con "riduci movimento": sezione normale */
-.x3d-off{height:auto}
-.x3d-off .x3d-sticky{position:relative;height:auto;padding:70px 0}
-.x3d-off .x3d-stage{display:none}
+/* Senza 3D (browser vecchi): resta una sezione di testo con i pulsanti */
+.x3d-off .x3d-stage-wrap{display:none}
 .x3d-off .x3d-inner{grid-template-columns:1fr;max-width:640px}
-.x3d-off .x3d-step{opacity:1;display:block}
-.x3d-off .x3d-step span{max-height:none}
-.x3d-off .x3d-progress{display:none}
-@media (prefers-reduced-motion:reduce){.x3d{height:auto}.x3d-sticky{position:relative;height:100vh}}
-
-/* Lo scorrimento "fisso" non funziona se html/body tagliano con overflow:hidden: clip taglia uguale senza romperlo */
-@supports (overflow:clip){html,body{overflow-x:clip!important}}
-.x3d h2{color:#fff!important;font-size:clamp(34px,4.4vw,58px)!important;line-height:1.02!important;letter-spacing:-.03em!important;margin:0 0 16px!important}
-@media (max-width:860px){.x3d h2{font-size:30px!important;margin:0 0 10px!important}}
+@media (prefers-reduced-motion:reduce){.x3d-hint-hand{animation:none}.x3d-card{animation:none}}
+.x3d-hint{white-space:nowrap!important;width:max-content!important;font-size:13px!important;line-height:1.2!important;max-width:none!important}
+.x3d-toggle{font-size:13px!important;line-height:1.2!important}
