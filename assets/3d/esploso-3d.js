@@ -11,12 +11,14 @@ import { MeshoptDecoder } from './lib/meshopt_decoder.module.js';
 const HALF_PI = Math.PI / 2;
 // move: spostamento (metri) quando il telefono è aperto. view: da che lato guardarlo in primo piano.
 const PARTS = {
-  display:  { nodes: ['front_panel'], move: [0.085, 0, 0], view: { y: -HALF_PI + 0.3, x: 0.08 } },
-  batteria: { nodes: ['battery'], move: [0.046, 0, 0], view: { y: -HALF_PI + 0.35, x: 0.08 } },
-  scheda:   { nodes: ['motherboard', 'motherboard_cover', 'motherboard_cables_cover'], move: [0.05, 0, 0], view: { y: -HALF_PI + 0.4, x: 0.08 } },
-  ricarica: { nodes: ['charging_port'], move: [0, -0.03, 0], view: { y: -HALF_PI + 0.7, x: -0.3 } },
-  camera:   { nodes: ['back_cam', 'back_cam_cover'], move: [-0.03, 0, 0], view: { y: HALF_PI - 0.35, x: 0.1 } },
-  retro:    { nodes: ['back_cover', 'magnets', 'wireless_charge'], move: [-0.05, 0, 0], view: { y: HALF_PI - 0.3, x: 0.1 } },
+  display:  { nodes: ['front_panel'], move: [0.115, 0.034, 0], view: { y: -HALF_PI + 0.3, x: 0.08 } },
+  batteria: { nodes: ['battery'], move: [0.064, 0.012, 0], view: { y: -HALF_PI + 0.35, x: 0.08 } },
+  scheda:   { nodes: ['motherboard', 'motherboard_cover', 'motherboard_cables_cover'], move: [0.07, 0.014, 0], view: { y: -HALF_PI + 0.4, x: 0.08 } },
+  ricarica: { nodes: ['charging_port'], move: [0, -0.034, 0], view: { y: -HALF_PI + 0.7, x: -0.3 } },
+  camera:   { nodes: ['back_cam', 'back_cam_cover'], move: [-0.038, -0.01, 0], view: { y: HALF_PI - 0.35, x: 0.1 } },
+  retro:    { nodes: ['back_cover', 'magnets', 'wireless_charge'], move: [-0.075, -0.024, 0], view: { y: HALF_PI - 0.3, x: 0.1 } },
+  // la scocca (telaio + tasti) non ha un nome nel modello: la riconosco dal materiale
+  scocca:   { materials: ['mat_color_housing', 'mat_color_plastic'], move: [0, 0, 0], view: { y: -0.95, x: 0.2 } },
 };
 // Colori realistici (bianco / argento): il verde ALBA sta nella luce e nell'interfaccia.
 const COLORS = {
@@ -26,7 +28,7 @@ const COLORS = {
 };
 // pezzo -> voce del listino (stessi nomi del preventivatore)
 const PRICE_KEY = { display: 'displayRigenerato', batteria: 'batteria', camera: 'camera', ricarica: 'ricarica' };
-const PROBLEM = { display: 'display', batteria: 'battery', camera: 'camera', ricarica: 'charge', scheda: 'other', retro: 'other' };
+const PROBLEM = { display: 'display', batteria: 'battery', camera: 'camera', ricarica: 'charge', scheda: 'other', retro: 'other', scocca: 'other' };
 
 // ?x3dtest=1 salta le transizioni (solo per le prove automatiche)
 const FAST = /x3dtest/.test(location.search);
@@ -64,6 +66,7 @@ function init(section) {
   const priceEl = section.querySelector('.x3d-price');
   const closeBtn = section.querySelector('.x3d-close');
   const goBtn = section.querySelector('.x3d-go');
+  const toggle = section.querySelector('.x3d-toggle');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const narrow = window.matchMedia('(max-width: 860px)');
 
@@ -129,8 +132,8 @@ function init(section) {
     let overviewR = 0.1;
     let open = 0, openTarget = 0, focus = 0;
 
-    const BASE = { y: -1.0, x: 0.16 };
-    let rotY = BASE.y, rotX = BASE.x, velY = 0, touched = false, lastInput = 0;
+    const BASE = { y: -0.78, x: 0.14 };
+    let rotY = BASE.y, rotX = BASE.x, velY = 0, touched = false, lastInput = 0, userTurned = false;
 
     const loader = new GLTFLoader();
     loader.setMeshoptDecoder(MeshoptDecoder);
@@ -145,7 +148,7 @@ function init(section) {
 
       for (const [part, cfg] of Object.entries(PARTS)) {
         partObjs[part] = [];
-        for (const name of cfg.nodes) {
+        for (const name of cfg.nodes || []) {
           const obj = model.getObjectByName(name);
           if (!obj) continue;
           const wp = obj.getWorldPosition(new THREE.Vector3());
@@ -155,6 +158,12 @@ function init(section) {
           partObjs[part].push(obj);
           obj.traverse((m) => { if (m.isMesh) m.userData.part = part; });
         }
+      }
+      for (const [part, cfg] of Object.entries(PARTS)) {
+        if (!cfg.materials) continue;
+        model.traverse((m) => {
+          if (m.isMesh && !m.userData.part && cfg.materials.includes(m.material.name)) { m.userData.part = part; partObjs[part].push(m); }
+        });
       }
       // ogni pezzo ha i suoi materiali, così posso sfumare gli altri
       model.traverse((m) => {
@@ -175,7 +184,7 @@ function init(section) {
       section.classList.add('x3d-ready');
       status.textContent = '';
       const seen = new IntersectionObserver((e) => {
-        if (e[0].isIntersecting) { seen.disconnect(); setTimeout(() => { openTarget = 1; }, reduce || state.selected ? 0 : 700); }
+        if (e[0].isIntersecting) { seen.disconnect(); setTimeout(() => setOpen(1), reduce || state.selected ? 0 : 700); }
       }, { threshold: 0.4 });
       seen.observe(stage);
     }, (ev) => {
@@ -189,8 +198,14 @@ function init(section) {
       }
     }
 
+    function setOpen(v) {
+      openTarget = v;
+      if (toggle) { toggle.textContent = v ? 'Chiudi il telefono' : 'Apri il telefono'; toggle.setAttribute('aria-pressed', v ? 'true' : 'false'); }
+    }
+    if (toggle) toggle.addEventListener('click', () => { if (state.selected) select(null); setOpen(openTarget ? 0 : 1); });
+
     state.onSelect = () => {
-      if (state.selected) openTarget = 1;
+      if (state.selected) setOpen(1);
       lastInput = 0; // gira subito verso il lato giusto
       velY = 0;
     };
@@ -226,7 +241,7 @@ function init(section) {
     const el = renderer.domElement;
     let down = null;
     el.addEventListener('pointerdown', (e) => {
-      down = { x: e.clientX, y: e.clientY, px: e.clientX, moved: 0 };
+      down = { x: e.clientX, y: e.clientY, px: e.clientX, py: e.clientY, moved: 0, mouse: e.pointerType === 'mouse' };
       velY = 0;
     });
     window.addEventListener('pointermove', (e) => {
@@ -236,6 +251,9 @@ function init(section) {
       const step = (e.clientX - down.px) / Math.max(320, el.clientWidth * 0.6) * 3.4;
       down.px = e.clientX;
       rotY += step; velY = step;
+      if (down.mouse) { rotX = Math.max(-1.2, Math.min(1.2, rotX + (e.clientY - down.py) / 300)); }
+      down.py = e.clientY;
+      if (down.moved > 8) userTurned = true;
       if (Math.abs(dx) > 6 && !touched) { touched = true; if (hint) hint.classList.add('is-gone'); }
       lastInput = performance.now();
     });
@@ -288,10 +306,14 @@ function init(section) {
         if (reduce && state.selected) {
           rotY = PARTS[state.selected].view.y; rotX = PARTS[state.selected].view.x;
         } else if (!reduce && idle) {
-          const v = state.selected ? PARTS[state.selected].view : { y: BASE.y + Math.sin(now / 2600) * 0.3, x: BASE.x };
+          const v = state.selected ? PARTS[state.selected].view : null;
+          if (!v && userTurned) { /* l'ha girato il cliente: resta dove l'ha lasciato (360°) */ }
+          else {
+          const vv = v || { y: BASE.y + Math.sin(now / 2600) * 0.3, x: BASE.x };
           const k = Math.min(1, dt * (state.selected ? 4 : 0.8));
-          rotY += wrapAngle(v.y - rotY) * k;
-          rotX += (v.x - rotX) * k;
+          rotY += wrapAngle(vv.y - rotY) * k;
+          rotX += (vv.x - rotX) * k;
+          }
         }
       }
       pivot.rotation.set(rotX, rotY, 0);
@@ -318,7 +340,7 @@ function init(section) {
       const t = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2);
       const distV = camR / t * (H / fb.h);
       const distH = camR / (t * camera.aspect) * (W / fb.w);
-      const dist = Math.max(distV, distH) * 1.02;
+      const dist = Math.max(distV, distH) * (0.8 + 0.22 * focus);
       camera.position.set(camTarget.x, camTarget.y, camTarget.z + dist);
       camera.near = dist / 60; camera.far = dist * 8;
       camera.lookAt(camTarget);

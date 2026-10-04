@@ -81,3 +81,14 @@
 .x3d-off .x3d-chips{flex-wrap:wrap;overflow:visible;mask-image:none}
 .x3d-off.x3d-focus .x3d-chips{display:flex}
 @media (prefers-reduced-motion:reduce){.x3d-hint-hand,.x3d-sheet{animation:none}}
+
+/* apri / chiudi il telefono */
+.x3d-toggle{position:absolute;right:24px;bottom:22px;pointer-events:auto;appearance:none;cursor:pointer;font:inherit;font-size:14px!important;font-weight:700;line-height:1.1!important;
+  padding:11px 16px;border-radius:999px;border:1px solid rgba(243,248,241,.28);background:rgba(7,16,11,.6);color:#fff;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  opacity:0;transition:opacity .4s,border-color .2s}
+.x3d-ready .x3d-toggle{opacity:1}
+.x3d-toggle:hover{border-color:#b7ff5a}
+.x3d-toggle:focus-visible{outline:3px solid #b7ff5a;outline-offset:2px}
+.x3d-focus .x3d-toggle{opacity:0;pointer-events:none}
+.x3d-off .x3d-toggle{display:none}
+@media (max-width:860px){.x3d-toggle{right:12px;top:118px;bottom:auto;font-size:13px!important;padding:9px 13px}}
