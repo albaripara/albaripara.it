@@ -30,6 +30,137 @@ const COLORS = {
 const PRICE_KEY = { display: 'displayRigenerato', batteria: 'batteria', camera: 'camera', ricarica: 'ricarica' };
 const PROBLEM = { display: 'display', batteria: 'battery', camera: 'camera', ricarica: 'charge', scheda: 'other', retro: 'other', scocca: 'other' };
 
+// --- un solo download del modello, usato sia dalla hero sia dalla sezione
+let modelP = null;
+const progressCbs = [];
+function loadModel(onProgress) {
+  if (onProgress) progressCbs.push(onProgress);
+  if (!modelP) {
+    modelP = new Promise((resolve, reject) => {
+      const l = new GLTFLoader();
+      l.setMeshoptDecoder(MeshoptDecoder);
+      l.load('assets/3d/telefono-alba.glb', resolve, (ev) => progressCbs.forEach((f) => f(ev)), reject);
+    });
+  }
+  return modelP.then((gltf) => {
+    const model = gltf.scene.clone(true);
+    if (gltf.animations[0]) { // posa di partenza: telefono montato
+      const mixer = new THREE.AnimationMixer(model);
+      const a = mixer.clipAction(gltf.animations[0]); a.play(); a.time = 0; mixer.update(0); mixer.stopAllAction();
+    }
+    model.traverse((m) => {
+      if (!m.isMesh) return;
+      m.material = m.material.clone();
+      if (COLORS[m.material.name]) m.material.color.setRGB(...COLORS[m.material.name]);
+    });
+    model.updateMatrixWorld(true);
+    return model;
+  });
+}
+
+function makeRenderer(container, narrow) {
+  const r = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+  r.setPixelRatio(Math.min(window.devicePixelRatio || 1, narrow ? 1.6 : 2));
+  r.outputColorSpace = THREE.SRGBColorSpace;
+  r.toneMapping = THREE.ACESFilmicToneMapping;
+  r.toneMappingExposure = 1.0;
+  container.appendChild(r.domElement);
+  const scene = new THREE.Scene();
+  scene.environment = new THREE.PMREMGenerator(r).fromScene(new RoomEnvironment(), 0.04).texture;
+  const key = new THREE.DirectionalLight(0xffffff, 2.0); key.position.set(3, 4, 5); scene.add(key);
+  const rim = new THREE.DirectionalLight(0xb7ff5a, 3.0); rim.position.set(-4, 2, -4); scene.add(rim);
+  const rim2 = new THREE.DirectionalLight(0x25a84e, 2.0); rim2.position.set(4, -2, -3); scene.add(rim2);
+  scene.add(new THREE.HemisphereLight(0xeaffea, 0x07100b, 0.5));
+  return { renderer: r, scene };
+}
+
+// --- HERO: telefono che gira da solo e ogni tanto si apre. Si può girare col dito; un tocco porta alla sezione.
+const heroEl = document.querySelector('[data-x3d-hero]');
+if (heroEl && webglOk()) initHero(heroEl);
+
+function initHero(el) {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const narrow = window.matchMedia('(max-width: 860px)').matches;
+  const go = () => {
+    const { renderer, scene } = makeRenderer(el, narrow);
+    const camera = new THREE.PerspectiveCamera(26, 1, 0.001, 10);
+    const pivot = new THREE.Group(); scene.add(pivot);
+    let moving = [], radius = 0.1, W = 0, H = 0;
+    loadModel().then((model) => {
+      pivot.add(model);
+      for (const cfg of Object.values(PARTS)) {
+        for (const name of cfg.nodes || []) {
+          const obj = model.getObjectByName(name);
+          if (!obj) continue;
+          const wp = obj.getWorldPosition(new THREE.Vector3());
+          const a = obj.parent.worldToLocal(wp.clone());
+          const b = obj.parent.worldToLocal(wp.clone().add(new THREE.Vector3(...cfg.move)));
+          moving.push({ obj, from: obj.position.clone(), delta: b.sub(a) });
+        }
+      }
+      setOpen(0.75); model.updateMatrixWorld(true);
+      const box = new THREE.Box3().setFromObject(model, true);
+      radius = box.getSize(new THREE.Vector3()).length() / 2;
+      model.position.copy(box.getCenter(new THREE.Vector3())).negate();
+      setOpen(0);
+      resize();
+      el.classList.add('is-ready');
+    }).catch(() => {});
+    function setOpen(k) { for (const m of moving) m.obj.position.copy(m.from).addScaledVector(m.delta, k); }
+    function resize() {
+      W = el.clientWidth; H = el.clientHeight;
+      if (!W || !H) return;
+      renderer.setSize(W, H, false);
+      camera.aspect = W / H;
+      const t = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2);
+      const dist = Math.max(radius / t, radius / (t * camera.aspect)) * 0.86;
+      camera.position.set(0, 0, dist); camera.near = dist / 60; camera.far = dist * 8;
+      camera.lookAt(0, 0, 0); camera.updateProjectionMatrix();
+    }
+    new ResizeObserver(resize).observe(el);
+
+    // gira col dito (in orizzontale), tocco = vai a «Che cosa si è rotto?»
+    let rotY = -0.6, vel = 0, down = null, lastInput = -1e9;
+    const c = renderer.domElement;
+    c.addEventListener('pointerdown', (e) => { down = { x: e.clientX, px: e.clientX, moved: 0 }; vel = 0; });
+    window.addEventListener('pointermove', (e) => {
+      if (!down) return;
+      down.moved = Math.max(down.moved, Math.abs(e.clientX - down.x));
+      const step = (e.clientX - down.px) / Math.max(300, c.clientWidth) * 4; down.px = e.clientX;
+      rotY += step; vel = step; lastInput = performance.now();
+    });
+    window.addEventListener('pointerup', (e) => {
+      if (!down) return; const tap = down.moved < 8; down = null;
+      if (tap && e.target === c) { const s = document.getElementById('dentro-il-telefono'); if (s) s.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }); }
+    });
+    window.addEventListener('pointercancel', () => { down = null; });
+
+    let visible = true;
+    new IntersectionObserver((e) => { visible = e[0].isIntersecting; }).observe(el);
+    let open = 0, prev = performance.now(), t0 = performance.now();
+    (function loop(now) {
+      requestAnimationFrame(loop);
+      if (!visible || !moving.length || !W) { prev = now; return; }
+      if (FAST && now - prev < 600) return;
+      const dt = FAST ? 0.6 : Math.min(0.05, (now - prev) / 1000); prev = now;
+      // ciclo: chiuso 2,5 s → si apre → aperto 3,5 s → si chiude
+      const cyc = ((now - t0) / 1000) % 9;
+      const want = reduce ? 0.6 : (cyc > 2.5 && cyc < 7 ? 0.75 : 0);
+      open += (want - open) * Math.min(1, dt * (FAST ? 10 : 2.6));
+      if (!down) {
+        rotY += vel; vel *= 0.92;
+        if (!reduce && now - lastInput > 2500) rotY += dt * 0.35; // giro completo da solo, lento
+      }
+      pivot.rotation.set(0.12, rotY, 0);
+      setOpen(open);
+      renderer.render(scene, camera);
+    })(performance.now());
+  };
+  // non rallentare l'apertura della pagina: parte quando il resto è caricato
+  if (document.readyState === 'complete') setTimeout(go, 50);
+  else window.addEventListener('load', () => setTimeout(go, 50), { once: true });
+}
+
 // ?x3dtest=1 salta le transizioni (solo per le prove automatiche)
 const FAST = /x3dtest/.test(location.search);
 const section = document.querySelector('[data-x3d]');
@@ -135,15 +266,10 @@ function init(section) {
     const BASE = { y: -0.78, x: 0.14 };
     let rotY = BASE.y, rotX = BASE.x, velY = 0, touched = false, lastInput = 0, userTurned = false;
 
-    const loader = new GLTFLoader();
-    loader.setMeshoptDecoder(MeshoptDecoder);
-    loader.load('assets/3d/telefono-alba.glb', (gltf) => {
-      const model = gltf.scene;
+    loadModel((ev) => {
+      if (ev.total) status.textContent = 'Carico il telefono 3D… ' + Math.round(ev.loaded / ev.total * 100) + '%';
+    }).then((model) => {
       pivot.add(model);
-      if (gltf.animations[0]) { // posa di partenza: telefono montato
-        const mixer = new THREE.AnimationMixer(model);
-        const a = mixer.clipAction(gltf.animations[0]); a.play(); a.time = 0; mixer.update(0); mixer.stopAllAction();
-      }
       model.updateMatrixWorld(true);
 
       for (const [part, cfg] of Object.entries(PARTS)) {
@@ -168,9 +294,7 @@ function init(section) {
       // ogni pezzo ha i suoi materiali, così posso sfumare gli altri
       model.traverse((m) => {
         if (!m.isMesh) return;
-        const mat = m.material.clone();
-        if (COLORS[mat.name]) mat.color.setRGB(...COLORS[mat.name]);
-        m.material = mat;
+        const mat = m.material;
         allMats.push({ mat, part: m.userData.part || null, opacity: mat.opacity, transparent: mat.transparent, depthWrite: mat.depthWrite, e0: mat.emissive ? mat.emissive.clone() : null });
       });
 
@@ -187,9 +311,7 @@ function init(section) {
         if (e[0].isIntersecting) { seen.disconnect(); setTimeout(() => setOpen(1), reduce || state.selected ? 0 : 700); }
       }, { threshold: 0.4 });
       seen.observe(stage);
-    }, (ev) => {
-      if (ev.total) status.textContent = 'Carico il telefono 3D… ' + Math.round(ev.loaded / ev.total * 100) + '%';
-    }, () => section.classList.add('x3d-off'));
+    }).catch(() => section.classList.add('x3d-off'));
 
     function applyOpen(k, sel, f) {
       for (const m of moving) {

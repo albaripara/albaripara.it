@@ -92,3 +92,25 @@
 .x3d-focus .x3d-toggle{opacity:0;pointer-events:none}
 .x3d-off .x3d-toggle{display:none}
 @media (max-width:860px){.x3d-toggle{right:12px;top:118px;bottom:auto;font-size:13px!important;padding:9px 13px}}
+
+/* ---------- HERO con telefono 3D ---------- */
+.premium-hero.has-3d{position:relative;overflow:hidden}
+.premium-hero.has-3d .premium-hero-content{display:grid!important;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);align-items:center;gap:24px;
+  width:min(1200px,calc(100% - 48px))!important;margin:0 auto!important;text-align:left!important;position:relative;z-index:2}
+.premium-hero.has-3d .premium-copy{margin:0!important;max-width:none!important;text-align:left!important}
+.premium-hero.has-3d .premium-copy .premium-actions{justify-content:flex-start!important}
+.premium-hero.has-3d .premium-copy h1{font-size:clamp(42px,5.2vw,70px)!important}
+.premium-hero.has-3d .premium-text{max-width:460px!important;margin-left:0!important;margin-right:0!important}
+.x3d-hero-stage{position:relative;height:clamp(420px,62vh,600px);margin-right:-24px}
+.x3d-hero-stage canvas{position:absolute;inset:0;width:100%!important;height:100%!important;display:block;opacity:0;transition:opacity 1.2s ease;touch-action:pan-y;cursor:grab}
+.x3d-hero-stage.is-ready canvas{opacity:1}
+@media (max-width:860px){
+  .premium-hero.has-3d{padding-bottom:0!important}
+  .premium-hero.has-3d .premium-hero-content{grid-template-columns:1fr;gap:0;width:calc(100% - 30px)!important}
+  .premium-hero.has-3d .premium-copy{text-align:center!important}
+  .premium-hero.has-3d .premium-copy .premium-actions{justify-content:center!important}
+  .premium-hero.has-3d .premium-copy h1{font-size:40px!important}
+  .premium-hero.has-3d .premium-text{margin-left:auto!important;margin-right:auto!important}
+  .x3d-hero-stage{height:340px;margin:4px -15px 0}
+}
+@media (prefers-reduced-motion:reduce){.x3d-hero-stage canvas{transition:none}}
