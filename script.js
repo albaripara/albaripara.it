@@ -93,6 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Listino collegato al gestionale: i prezzi sopra sono la riserva se il gestionale non risponde.
   const LISTINO_URL = "https://gestionale-riparazioni.vercel.app/api/public/listino";
+  window.albaIphonePrices = iphonePrices; // usato dal telefono 3D per i prezzi "a partire da"
   const PRICE_KEYS = ["displayRigenerato", "displayOriginale", "batteria", "batteriaOriginale", "ricarica", "camera"];
   (function loadListino() {
     if (typeof fetch !== "function") return;
@@ -278,6 +279,13 @@ document.addEventListener("DOMContentLoaded", () => {
     setResult("Scegli il problema", `${deviceModel} selezionato. Ora scegli l'intervento per vedere solo le soluzioni disponibili.`, backButtons());
     if (window.innerWidth < 760 && problemPanel) {
       setTimeout(() => problemPanel.scrollIntoView({ behavior: "smooth", block: "center" }), 150);
+    }
+    // problema già scelto toccando il telefono 3D: lo selezioniamo noi
+    const pending = window.albaPendingProblem;
+    if (pending) {
+      window.albaPendingProblem = null;
+      const btn = document.querySelector(`#problems button[data-problem="${pending}"]`);
+      if (btn) setTimeout(() => btn.click(), 250);
     }
   }
 

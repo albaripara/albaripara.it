@@ -1,67 +1,83 @@
-/* Sezione "telefono 3D" — ALBA Ripara */
-.x3d{position:relative;background:#07100b;color:#f3f8f1;padding:84px 0 48px;overflow:hidden;isolation:isolate}
+/* Sezione "Che cosa si è rotto?" con telefono 3D — ALBA Ripara */
+.x3d{position:relative;background:#07100b;color:#f3f8f1;overflow:hidden;isolation:isolate}
 .x3d::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background:radial-gradient(55% 60% at 72% 50%,rgba(37,168,78,.30),rgba(15,125,59,.10) 45%,transparent 72%),
-             radial-gradient(40% 40% at 12% 90%,rgba(183,255,90,.07),transparent 70%)}
-.x3d-inner{width:min(1240px,calc(100% - 48px));margin:0 auto;display:grid;grid-template-columns:minmax(300px,460px) 1fr;gap:40px;align-items:center}
-.x3d-eyebrow{margin:0 0 14px;font-size:12px;font-weight:900;letter-spacing:.16em;color:#b7ff5a}
-.x3d h2{color:#fff!important;font-size:clamp(34px,4.2vw,56px)!important;line-height:1.02!important;letter-spacing:-.03em!important;margin:0 0 12px!important}
-.x3d-lead{margin:0 0 22px;font-size:18px;line-height:1.5;color:rgba(243,248,241,.78)}
-
-.x3d-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
-.x3d-chip{appearance:none;border:1px solid rgba(243,248,241,.22);background:rgba(243,248,241,.06);color:#fff;
-  font:inherit;font-size:15px;font-weight:700;padding:10px 16px;border-radius:999px;cursor:pointer;transition:background .2s,border-color .2s,color .2s,transform .15s}
-.x3d-chip:hover{border-color:#b7ff5a}
-.x3d-chip:active{transform:scale(.97)}
-.x3d-chip[aria-pressed="true"]{background:#b7ff5a;border-color:#b7ff5a;color:#07100b}
-.x3d-chip:focus-visible,.x3d-toggle:focus-visible{outline:3px solid #b7ff5a;outline-offset:2px}
-
-.x3d-cards{min-height:112px;margin:0 0 20px}
-.x3d-card{padding:16px 18px;border-radius:16px;background:rgba(37,168,78,.13);border:1px solid rgba(183,255,90,.18);animation:x3dIn .35s ease}
-.x3d-card h3{margin:0 0 4px!important;font-size:18px!important;color:#fff!important}
-.x3d-card p{margin:0;font-size:15px;line-height:1.5;color:rgba(243,248,241,.82)}
-.x3d-card strong{color:#b7ff5a}
-@keyframes x3dIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-
-.x3d-stage-wrap{position:relative;height:min(78vh,640px);min-height:380px}
+  background:radial-gradient(50% 60% at 68% 50%,rgba(37,168,78,.32),rgba(15,125,59,.10) 45%,transparent 72%),
+             radial-gradient(40% 40% at 10% 90%,rgba(183,255,90,.07),transparent 70%)}
+.x3d-wrap{position:relative;height:min(88vh,780px);min-height:580px}
 .x3d-stage{position:absolute;inset:0}
-.x3d-stage canvas{position:absolute;inset:0;width:100%!important;height:100%!important;display:block;opacity:0;transition:opacity .8s ease;touch-action:pan-y;cursor:grab}
+.x3d-stage canvas{position:absolute;inset:0;width:100%!important;height:100%!important;display:block;opacity:0;transition:opacity .8s ease;touch-action:pan-y;cursor:grab;-webkit-tap-highlight-color:transparent}
 .x3d-stage canvas:active{cursor:grabbing}
 .x3d-ready .x3d-stage canvas{opacity:1}
 .x3d-status{position:absolute;inset:0;margin:0;display:flex;align-items:center;justify-content:center;font-size:14px;color:rgba(243,248,241,.6)}
 
-.x3d-hint{position:absolute;left:50%;bottom:58px;transform:translateX(-50%);margin:0;padding:8px 14px;border-radius:999px;
-  background:rgba(7,16,11,.72);border:1px solid rgba(243,248,241,.16);font-size:14px;font-weight:700;color:#fff;white-space:nowrap;
-  pointer-events:none;opacity:0;transition:opacity .5s}
+/* testi e pulsanti sopra al 3D: solo loro ricevono i tocchi, il resto va al telefono */
+.x3d-ui{position:absolute;inset:0;pointer-events:none;width:min(1240px,calc(100% - 48px));margin:0 auto;display:flex;align-items:center}
+.x3d-col{width:min(430px,40%);pointer-events:none;display:flex;flex-direction:column}
+.x3d-head,.x3d-chips,.x3d-sheet{pointer-events:auto}
+.x3d-eyebrow{margin:0 0 12px!important;font-size:12px!important;font-weight:900!important;letter-spacing:.16em!important;color:#b7ff5a!important}
+.x3d h2{color:#fff!important;font-size:clamp(36px,4.2vw,58px)!important;line-height:1.02!important;letter-spacing:-.03em!important;margin:0 0 10px!important}
+.x3d-lead{margin:0 0 22px!important;font-size:18px!important;line-height:1.45!important;color:rgba(243,248,241,.78)!important}
+
+.x3d-chips{display:flex;flex-wrap:wrap;gap:8px}
+.x3d-chip{appearance:none;border:1px solid rgba(243,248,241,.24);background:rgba(7,16,11,.55);color:#fff;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  font:inherit;font-size:15px;font-weight:700;line-height:1.1;padding:12px 17px;border-radius:999px;cursor:pointer;white-space:nowrap;transition:background .2s,border-color .2s,color .2s,transform .15s}
+.x3d-chip:hover{border-color:#b7ff5a}
+.x3d-chip:active{transform:scale(.96)}
+.x3d-chip[aria-pressed="true"]{background:#b7ff5a;border-color:#b7ff5a;color:#07100b}
+.x3d-chip:focus-visible,.x3d-close:focus-visible,.x3d-go:focus-visible{outline:3px solid #b7ff5a;outline-offset:2px}
+
+/* scheda del pezzo scelto */
+.x3d-sheet{position:relative;margin-top:16px;padding:20px 20px 18px;border-radius:20px;background:rgba(10,22,15,.86);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border:1px solid rgba(183,255,90,.28);box-shadow:0 18px 50px rgba(0,0,0,.45);animation:x3dUp .35s cubic-bezier(.2,.8,.2,1)}
+.x3d-sheet[hidden]{display:none}
+.x3d-card h3{margin:0 40px 6px 0!important;font-size:24px!important;line-height:1.1!important;color:#fff!important}
+.x3d-card p{margin:0!important;font-size:16px!important;line-height:1.45!important;color:rgba(243,248,241,.86)!important}
+.x3d-card .x3d-time{margin-top:10px!important;font-size:14px!important;font-weight:700!important;color:#b7ff5a!important}
+.x3d-card .x3d-time::before{content:"⏱ "}
+.x3d-price{margin:10px 0 14px!important;font-size:14px!important;line-height:1.4!important;color:rgba(243,248,241,.7)!important}
+.x3d-price strong{font-size:20px;color:#fff}
+.x3d-go{display:block;width:100%;text-align:center;font:inherit;cursor:pointer;border:0}
+.x3d-close{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;border:1px solid rgba(243,248,241,.25);background:rgba(243,248,241,.06);
+  color:#fff;font-size:24px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.x3d-close:hover{border-color:#b7ff5a}
+@keyframes x3dUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+.x3d-hint{position:absolute;left:68%;bottom:26px;transform:translateX(-50%);margin:0!important;padding:9px 15px;border-radius:999px;
+  background:rgba(7,16,11,.7);border:1px solid rgba(243,248,241,.18);font-size:13px!important;line-height:1.2!important;font-weight:700;color:#fff;
+  white-space:nowrap!important;width:max-content;pointer-events:none;opacity:0;transition:opacity .5s}
 .x3d-ready .x3d-hint{opacity:1}
-.x3d-ready .x3d-hint.is-gone{opacity:0}
+.x3d-ready .x3d-hint.is-gone,.x3d-focus .x3d-hint{opacity:0}
 .x3d-hint-hand{display:inline-block;animation:x3dSwipe 1.8s ease-in-out infinite}
 @keyframes x3dSwipe{0%,100%{transform:translateX(-6px)}50%{transform:translateX(6px)}}
 
-.x3d-toggle{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);appearance:none;cursor:pointer;
-  border:1px solid rgba(243,248,241,.25);background:transparent;color:#fff;font:inherit;font-size:14px;font-weight:700;padding:8px 16px;border-radius:999px;opacity:0;transition:opacity .5s}
-.x3d-ready .x3d-toggle{opacity:1}
-.x3d-toggle:hover{border-color:#b7ff5a}
-
-.x3d-credit{width:min(1240px,calc(100% - 48px));margin:18px auto 0;font-size:11px;color:rgba(243,248,241,.42);text-align:right}
+.x3d-credit{width:min(1240px,calc(100% - 48px));margin:0 auto;padding:0 0 14px;font-size:11px!important;color:rgba(243,248,241,.42)!important;text-align:right}
 .x3d-credit a{color:inherit;text-decoration:underline}
 
-/* Telefono: prima il 3D, sotto pulsanti e testo */
+/* ---------- telefono: tutto in un solo schermo ---------- */
 @media (max-width:860px){
-  .x3d{padding:56px 0 30px}
-  .x3d-inner{width:calc(100% - 30px);grid-template-columns:1fr;gap:6px}
-  .x3d-stage-wrap{order:-1;height:62vh;min-height:330px;max-height:520px}
-  .x3d h2{font-size:30px!important}
-  .x3d-lead{font-size:16px;margin-bottom:14px}
-  .x3d-chips{gap:6px}
-  .x3d-chip{font-size:14px;padding:9px 13px}
-  .x3d-cta{display:block;text-align:center}
-  .x3d-credit{width:calc(100% - 30px);text-align:center;font-size:10px}
+  .x3d-wrap{height:calc(100svh - 70px);min-height:560px;max-height:860px}
+  .x3d-ui{width:100%;align-items:stretch}
+  .x3d-col{width:100%;height:100%;justify-content:space-between}
+  .x3d-head{padding:22px 16px 0;pointer-events:none}
+  .x3d h2{font-size:30px!important;margin-bottom:4px!important}
+  .x3d-eyebrow{margin-bottom:6px!important}
+  .x3d-lead{font-size:15px!important;margin:0!important}
+  .x3d-chips{flex-wrap:nowrap;overflow-x:auto;padding:0 16px 18px;scrollbar-width:none;-webkit-overflow-scrolling:touch;mask-image:linear-gradient(90deg,#000 88%,transparent)}
+  .x3d-chips::-webkit-scrollbar{display:none}
+  .x3d-chip{font-size:15px;padding:12px 16px;flex:0 0 auto}
+  .x3d-focus .x3d-chips{display:none}
+  .x3d-sheet{margin:0 10px 12px;padding:18px 16px 16px;border-radius:22px}
+  .x3d-card h3{font-size:22px!important}
+  .x3d-card p{font-size:15px!important}
+  .x3d-hint{left:50%;bottom:86px}
+  .x3d-credit{width:100%;padding:0 16px 12px;text-align:center;font-size:10px!important}
 }
 
-/* Senza 3D (browser vecchi): resta una sezione di testo con i pulsanti */
-.x3d-off .x3d-stage-wrap{display:none}
-.x3d-off .x3d-inner{grid-template-columns:1fr;max-width:640px}
-@media (prefers-reduced-motion:reduce){.x3d-hint-hand{animation:none}.x3d-card{animation:none}}
-.x3d-hint{white-space:nowrap!important;width:max-content!important;font-size:13px!important;line-height:1.2!important;max-width:none!important}
-.x3d-toggle{font-size:13px!important;line-height:1.2!important}
+/* senza 3D: restano domanda, pulsanti e scheda */
+.x3d-off .x3d-wrap{height:auto;min-height:0;padding:60px 0}
+.x3d-off .x3d-stage,.x3d-off .x3d-hint{display:none}
+.x3d-off .x3d-ui{position:relative;inset:auto}
+.x3d-off .x3d-col{width:100%;max-width:640px;height:auto}
+.x3d-off .x3d-chips{flex-wrap:wrap;overflow:visible;mask-image:none}
+.x3d-off.x3d-focus .x3d-chips{display:flex}
+@media (prefers-reduced-motion:reduce){.x3d-hint-hand,.x3d-sheet{animation:none}}
