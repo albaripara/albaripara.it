@@ -122,3 +122,5 @@ body.v28-final .premium-hero.hg{position:relative;overflow:hidden;padding:56px 0
 @keyframes hgShine{from{left:-60%}to{left:130%}}
 @media (max-width:860px){.hg-ask-main{font-size:15px;padding:7px 14px}}
 @media (prefers-reduced-motion:reduce){.hg-ask-hand,.hg-chip::after{animation:none}.hg-chip::after{display:none}}
+/* la scritta verde sfumata tagliava le lettere con la gambetta (g, p): spazio sotto per le discendenti */
+.hg h1 .hero-location{padding-bottom:.14em;margin-bottom:-.14em;line-height:1.05}
