@@ -28,6 +28,16 @@
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var selected = null;
 
+  // video: niente movimento se il cliente ha chiesto «riduci movimento»; si ferma fuori schermo
+  if (media && media.tagName === 'VIDEO') {
+    if (reduce) { media.removeAttribute('autoplay'); media.pause(); }
+    else if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (e) {
+        if (e[0].isIntersecting) { var p = media.play(); if (p && p.catch) p.catch(function () {}); } else media.pause();
+      }).observe(media);
+    }
+  }
+
   function minPrice(key) {
     var all = window.albaIphonePrices;
     if (!all || !key) return null;
@@ -46,8 +56,9 @@
     sheet.hidden = !selected;
     hero.classList.toggle('hg-on', !!selected);
 
-    var f = selected ? FOCUS[selected] : null;
-    if (media) {
+    // lo zoom sul pezzo serve solo con la foto; il video resta intero
+    var f = selected && media && media.tagName === 'IMG' ? FOCUS[selected] : null;
+    if (media && media.tagName === 'IMG') {
       media.style.transformOrigin = f ? f.x + '% ' + f.y + '%' : '50% 50%';
       media.style.transform = f ? 'scale(' + f.z + ')' : '';
     }
