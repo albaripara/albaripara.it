@@ -1,0 +1,77 @@
+/* Pagina «Ricambi, garanzia e differenze» — ALBA Ripara */
+.it-flag{display:inline-block;width:16px;height:11px;margin-right:8px;vertical-align:-1px;border-radius:2px;
+  background:linear-gradient(90deg,#009246 0 33.3%,#fff 33.3% 66.6%,#ce2b37 66.6%);box-shadow:0 0 0 1px rgba(7,16,11,.12)}
+.rc-hero{background:radial-gradient(60% 80% at 85% 0%,rgba(37,168,78,.28),transparent 60%),#07100b;color:#f3f8f1;padding:84px 0 72px}
+.rc-hero .wrap,.rc-section .wrap,.rc-final .wrap{width:min(1100px,calc(100% - 48px))!important;margin:0 auto}
+.rc-eyebrow,.rc-kicker{margin:0 0 14px!important;font-size:12px!important;font-weight:900!important;letter-spacing:.16em!important;text-transform:uppercase;color:#0f7d3b!important}
+.rc-hero .rc-eyebrow{color:#b7ff5a!important}
+.rc-hero h1{margin:0 0 18px!important;font-size:clamp(40px,5.6vw,72px)!important;line-height:.98!important;letter-spacing:-.05em!important;color:#fff!important;text-align:left!important}
+.rc-hero h1 span{color:#b7ff5a}
+.rc-lead{max-width:640px;margin:0!important;font-size:19px!important;line-height:1.55!important;color:rgba(243,248,241,.8)!important;text-align:left!important}
+.rc-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+
+.rc-section{padding:72px 0;background:#f6f7f3;color:#0b1711}
+.rc-alt{background:#fff}
+.rc-section h2{margin:0 0 26px!important;font-size:clamp(30px,3.6vw,46px)!important;line-height:1.05!important;letter-spacing:-.035em!important;color:#07100b!important;text-align:left!important}
+.rc-text{margin:0!important;font-size:17px!important;line-height:1.6!important;color:#3d4a41!important;text-align:left!important}
+
+.rc-parts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.rc-part{position:relative;padding:22px 20px 20px;border-radius:22px;background:#fff;border:1px solid #dfe6df;text-align:left}
+.rc-alt .rc-part{background:#f6f7f3}
+.rc-part h3{margin:12px 0 8px!important;font-size:21px!important;color:#07100b!important}
+.rc-part p{margin:0!important;font-size:15px!important;line-height:1.5!important;color:#4a574e!important}
+.rc-badge{display:inline-block;padding:5px 10px;border-radius:999px;font-size:12px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
+.is-yes .rc-badge{background:#e3f6e7;color:#0f7d3b}
+.is-green{border-color:#25a84e;box-shadow:0 0 0 1px #25a84e}
+.is-no{background:#fbf3f3!important;border-color:#f0d4d4}
+.is-no .rc-badge{background:#b42323;color:#fff}
+.is-no h3{text-decoration:line-through;text-decoration-color:#b42323;text-decoration-thickness:2px}
+
+.rc-note{margin-top:22px;padding:24px 26px;border-radius:22px;background:#07100b;color:#f3f8f1;text-align:left}
+.rc-note h3{margin:0 0 8px!important;font-size:20px!important;color:#b7ff5a!important}
+.rc-note p{margin:0!important;font-size:17px!important;line-height:1.55!important;color:rgba(243,248,241,.86)!important}
+.rc-note strong{color:#fff}
+
+.rc-two{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:40px;align-items:start}
+.rc-list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.rc-list li{padding:18px 20px;border-radius:18px;background:#f6f7f3;border:1px solid #dfe6df;text-align:left}
+.rc-list strong{display:block;font-size:18px;color:#07100b}
+.rc-list span{display:block;margin-top:3px;font-size:15px;color:#4a574e}
+.rc-card{padding:26px;border-radius:22px;background:#fff;border:1px solid #dfe6df;text-align:left}
+.rc-card h3{margin:0 0 8px!important;font-size:21px!important;color:#07100b!important}
+.rc-card p{margin:0!important;font-size:16px!important;line-height:1.55!important;color:#4a574e!important}
+
+.rc-table{border-radius:22px;overflow:hidden;border:1px solid #dfe6df;background:#fff}
+.rc-row{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1fr) minmax(0,1.15fr);border-top:1px solid #eef2ee}
+.rc-row:first-child{border-top:0}
+.rc-row span{padding:16px 18px;font-size:15px;line-height:1.45;text-align:left;color:#4a574e}
+.rc-row span:first-child{font-weight:800;color:#07100b}
+.rc-row span:last-child{background:#f1faf3;color:#0b3d1f;font-weight:700}
+.rc-head span{font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#7a857d;background:#fafbf9}
+.rc-head span:last-child{background:#0f7d3b;color:#fff}
+
+.rc-final{padding:72px 0 84px;background:#07100b;color:#f3f8f1;text-align:left}
+.rc-final h2{margin:0 0 10px!important;font-size:clamp(30px,3.6vw,46px)!important;line-height:1.05!important;letter-spacing:-.035em!important;color:#fff!important;text-align:left!important}
+.rc-final p{margin:0!important;font-size:17px!important;color:rgba(243,248,241,.78)!important;text-align:left!important}
+
+@media (max-width:860px){
+  .rc-hero{padding:48px 0 44px}
+  .rc-hero .wrap,.rc-section .wrap,.rc-final .wrap{width:calc(100% - 30px)!important}
+  .rc-hero h1{font-size:38px!important}
+  .rc-hero h1 br{display:none}
+  .rc-lead{font-size:16px!important}
+  .rc-actions .btn{flex:1 1 100%;text-align:center}
+  .rc-section{padding:48px 0}
+  .rc-section h2{font-size:28px!important;margin-bottom:18px!important}
+  .rc-parts{grid-template-columns:1fr 1fr;gap:10px}
+  .rc-part{padding:16px 14px}
+  .rc-part h3{font-size:18px!important}
+  .rc-part p{font-size:14px!important}
+  .rc-two{grid-template-columns:1fr;gap:20px}
+  .rc-row{grid-template-columns:1fr 1fr}
+  .rc-row span:first-child{grid-column:1/-1;padding-bottom:4px;background:#fafbf9}
+  .rc-row span{padding:10px 12px;font-size:14px}
+  .rc-head span:first-child{display:none}
+  .rc-final{padding:48px 0 56px}
+}
+@media (max-width:420px){.rc-parts{grid-template-columns:1fr}}

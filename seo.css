@@ -1,0 +1,8 @@
+/* blocchi di testo delle pagine servizio */
+.seo-block{padding:56px 0;background:#fff}
+.seo-block .wrap{width:min(860px,calc(100% - 36px))!important;margin:0 auto;text-align:left}
+.seo-block h2{margin:0 0 14px!important;font-size:clamp(26px,3vw,36px)!important;line-height:1.1!important;letter-spacing:-.03em!important;color:#07100b!important;text-align:left!important}
+.seo-block p,.seo-block li{font-size:17px!important;line-height:1.6!important;color:#3d4a41!important;text-align:left!important}
+.seo-block ul{margin:12px 0 16px;padding-left:20px;display:grid;gap:8px}
+.seo-block a{color:#0f7d3b!important;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.seo-block strong{color:#07100b}

@@ -1,0 +1,65 @@
+/* =========================================================
+   ALBA Ripara — stile «vetro liquido» (ispirato al Liquid Glass di iOS)
+   Vetro traslucido che sfoca lo sfondo, riflesso sul bordo alto,
+   pillole che reagiscono al tocco. Caricato per ultimo su tutte le pagine.
+   ========================================================= */
+:root{
+  --lg-blur:saturate(180%) blur(22px);
+  --lg-light-bg:linear-gradient(180deg,rgba(255,255,255,.78),rgba(255,255,255,.55));
+  --lg-light-edge:rgba(255,255,255,.75);
+  --lg-dark-bg:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.05));
+  --lg-dark-edge:rgba(255,255,255,.26);
+  --lg-shine:inset 0 1px 0 rgba(255,255,255,.55),inset 0 -1px 0 rgba(255,255,255,.08);
+  --lg-lift:0 10px 30px rgba(7,16,11,.18);
+  --lg-ease:cubic-bezier(.2,.9,.25,1.15);
+}
+
+/* ---------- barra in alto: vetro che galleggia sul contenuto ---------- */
+body.v28-final .header{
+  background:linear-gradient(180deg,rgba(250,251,248,.72),rgba(250,251,248,.55))!important;
+  -webkit-backdrop-filter:var(--lg-blur)!important;backdrop-filter:var(--lg-blur)!important;
+  border-bottom:1px solid rgba(255,255,255,.6)!important;
+  box-shadow:inset 0 -1px 0 rgba(7,16,11,.06),0 6px 24px rgba(7,16,11,.06)!important;
+}
+body.v28-final .header .call-btn,body.v28-final .header .wa,body.v28-final .header .menu-toggle,body.v28-final .header button[aria-controls]{
+  border-radius:999px!important;transition:transform .25s var(--lg-ease),box-shadow .25s ease!important;
+}
+body.v28-final .header .call-btn,body.v28-final .header button[aria-controls]{
+  background:var(--lg-light-bg)!important;border:1px solid var(--lg-light-edge)!important;
+  box-shadow:var(--lg-shine),0 4px 14px rgba(7,16,11,.08)!important;
+  -webkit-backdrop-filter:var(--lg-blur);backdrop-filter:var(--lg-blur);
+}
+body.v28-final .header .wa{
+  background:linear-gradient(180deg,#1d2a22,#07100b)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 6px 18px rgba(7,16,11,.22)!important;
+}
+body.v28-final .header .call-btn:active,body.v28-final .header .wa:active,body.v28-final .header button[aria-controls]:active{transform:scale(.94)}
+
+/* ---------- pulsanti: pillole lucide ---------- */
+body.v28-final .btn{border-radius:999px!important;transition:transform .25s var(--lg-ease),box-shadow .25s ease,filter .2s!important}
+body.v28-final .btn:active{transform:scale(.96)}
+body.v28-final .btn.primary{
+  background:linear-gradient(180deg,#2bb558 0%,#0f7d3b 100%)!important;color:#fff!important;border:1px solid rgba(255,255,255,.18)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -2px 6px rgba(0,0,0,.12),0 10px 26px rgba(15,125,59,.32)!important;
+}
+body.v28-final .btn.secondary{
+  background:var(--lg-light-bg)!important;border:1px solid var(--lg-light-edge)!important;color:#07100b!important;
+  -webkit-backdrop-filter:var(--lg-blur);backdrop-filter:var(--lg-blur);
+  box-shadow:var(--lg-shine),0 8px 22px rgba(7,16,11,.1)!important;
+}
+
+/* ---------- utilità: superfici di vetro ---------- */
+.lg-dark{background:var(--lg-dark-bg)!important;-webkit-backdrop-filter:var(--lg-blur)!important;backdrop-filter:var(--lg-blur)!important;
+  border:1px solid var(--lg-dark-edge)!important;box-shadow:var(--lg-shine),var(--lg-lift)!important}
+
+/* ---------- preventivatore: schede chiare in vetro ---------- */
+body.v28-final .model-card,body.v28-final #problems button,body.v28-final .solution-card{
+  background:var(--lg-light-bg)!important;border:1px solid rgba(255,255,255,.9)!important;
+  box-shadow:var(--lg-shine),0 6px 18px rgba(7,16,11,.07)!important;transition:transform .25s var(--lg-ease),box-shadow .25s ease!important;
+}
+body.v28-final .model-card:active,body.v28-final #problems button:active{transform:scale(.97)}
+body.v28-final .model-card.is-selected{background:linear-gradient(180deg,#1d2a22,#07100b)!important;border-color:rgba(255,255,255,.2)!important}
+
+@media (prefers-reduced-transparency:reduce){
+  body.v28-final .header{background:#f7f8f4!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+}
