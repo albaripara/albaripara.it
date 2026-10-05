@@ -93,6 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Listino collegato al gestionale: i prezzi sopra sono la riserva se il gestionale non risponde.
   const LISTINO_URL = "https://gestionale-riparazioni.vercel.app/api/public/listino";
+  window.albaIphonePrices = iphonePrices; // usato dal telefono 3D per i prezzi "a partire da"
   const PRICE_KEYS = ["displayRigenerato", "displayOriginale", "batteria", "batteriaOriginale", "ricarica", "camera"];
   (function loadListino() {
     if (typeof fetch !== "function") return;
@@ -236,7 +237,9 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderModelCards() {
     if (!modelCards) return;
     const query = (modelSearch?.value || "").trim().toLowerCase();
-    const allModels = models.iphone || [];
+    // i più recenti per primi (sono i più cercati), «Altro iPhone» sempre in fondo
+    const allModels = (models.iphone || []).filter((m) => !/^Altro/i.test(m)).reverse()
+      .concat((models.iphone || []).filter((m) => /^Altro/i.test(m)));
     const filteredModels = allModels.filter((deviceModel) => {
       const familyMatch = activeFamily === "Tutti" || familyFor(deviceModel) === activeFamily;
       const queryMatch = !query || deviceModel.toLowerCase().includes(query);
@@ -276,10 +279,43 @@ document.addEventListener("DOMContentLoaded", () => {
     if (problemHelper) problemHelper.textContent = `${deviceModel} selezionato. Ora scegli il problema.`;
     setFlowStep(2);
     setResult("Scegli il problema", `${deviceModel} selezionato. Ora scegli l'intervento per vedere solo le soluzioni disponibili.`, backButtons());
+    // problema già scelto dalla hero: lo applichiamo subito (un solo scorrimento, niente timer in gara)
+    const pending = window.albaPendingProblem;
+    window.albaPendingProblem = null;
+    if (pending && applyProblem(pending)) return;
     if (window.innerWidth < 760 && problemPanel) {
       setTimeout(() => problemPanel.scrollIntoView({ behavior: "smooth", block: "center" }), 150);
     }
   }
+
+  let resultScrollTimer = 0;
+  function scrollToResult() {
+    if (window.innerWidth >= 760 || !result) return;
+    clearTimeout(resultScrollTimer);
+    resultScrollTimer = setTimeout(() => result.scrollIntoView({ behavior: "smooth", block: "start" }), 120);
+  }
+
+  function applyProblem(problem) {
+    const btn = document.querySelector(`#problems button[data-problem="${problem}"]`);
+    if (!btn || !selectedModel) return false;
+    btn.click();
+    return true;
+  }
+
+  // Chiamata dalla hero («Vedi il prezzo per il mio iPhone»), quante volte si vuole.
+  window.albaPreventivo = {
+    setProblem(problem) {
+      if (selectedModel) {            // modello già scelto: risultato subito
+        window.albaPendingProblem = null;
+        if (applyProblem(problem)) return "result";
+      }
+      window.albaPendingProblem = problem; // altrimenti si applica appena sceglie il modello
+      const label = problemNames[problem] || "Problema";
+      setFlowStep(1);
+      setResult("Ora scegli il modello", `Problema già scelto: ${label}. Tocca il tuo iPhone qui sotto e vedi subito il prezzo.`);
+      return "model";
+    }
+  };
 
   function setResult(title, text, extra = "") {
     if (!result) return;
@@ -305,16 +341,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (problem === "display") {
       if (typeof window.albaTrack === "function") window.albaTrack("preventivo_result_viewed", { device_model: selectedModel, problem: problem, result_type: "display" });
-      return setResult("Display", "Circa 1 ora con appuntamento sui modelli gestiti in negozio.", buildOptions(label, [
-        ["Display rigenerato", data.displayRigenerato, "Circa 1 ora con appuntamento"],
-        ["Display pari originale", data.displayOriginale, "Circa 1 ora con appuntamento"]
+      return setResult("Display", "Sempre pannello originale Apple, mai compatibile. Scegli la qualità.", buildOptions(label, [
+        ["Display rigenerato", data.displayRigenerato, "Pannello originale, vetro nuovo"],
+        ["Display pari originale", data.displayOriginale, "Originale Apple smontato nuovo"]
       ]));
     }
 
     if (problem === "battery") {
       if (typeof window.albaTrack === "function") window.albaTrack("preventivo_result_viewed", { device_model: selectedModel, problem: problem, result_type: "battery" });
-      return setResult("Batteria", "Circa 1 ora con appuntamento sui modelli gestiti in negozio.", buildOptions(label, [
-        ["Batteria compatibile", data.batteria, "Circa 1 ora con appuntamento"],
+      return setResult("Batteria", "Originale o compatibile selezionata dai migliori fornitori: scegli tu.", buildOptions(label, [
+        ["Batteria compatibile selezionata", data.batteria, "Circa 1 ora con appuntamento"],
         ["Batteria originale", data.batteriaOriginale, "Quando disponibile su appuntamento"]
       ]));
     }
@@ -353,7 +389,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <span>${escapeHTML(note || "Soluzione disponibile")}</span>
           <strong>${escapeHTML(name)}</strong>
         </div>
-        <b>${escapeHTML(priceText)}</b>
+        <b class="${price == null ? "is-text" : ""}">${escapeHTML(priceText)}</b>
         <a href="${escapeHTML(wa(msg))}" target="_blank" rel="noopener noreferrer">${price == null ? "Manda un messaggio" : "WhatsApp"}</a>
       </article>`;
     }).join("") + `</div>${warrantyNote()}${changeButton()}`;
@@ -393,22 +429,20 @@ document.addEventListener("DOMContentLoaded", () => {
         const label = problemNames[selectedProblem] || "Problema";
         if (problemHelper) problemHelper.textContent = `${label} selezionato. Guarda la soluzione.`;
 
-        if (selectedProblem === "transfer") return showFixed(label, 25);
-        if (selectedProblem === "reset") return showFixed(label, 10);
-        if (selectedProblem === "backup") return showFixed(label, 20);
+        if (selectedProblem === "transfer") { showFixed(label, 25); return scrollToResult(); }
+        if (selectedProblem === "reset") { showFixed(label, 10); return scrollToResult(); }
+        if (selectedProblem === "backup") { showFixed(label, 20); return scrollToResult(); }
 
         if (selectedProblem === "other") {
           if (typeof window.albaTrack === "function") window.albaTrack("preventivo_result_viewed", { device_model: selectedModel, problem: selectedProblem, result_type: "manual_check" });
           const msg = `Ciao ALBA Ripara, vorrei verificare una riparazione per ${selectedModel}. Problema non in elenco.`;
           setResult("Da verificare", "Descrivici il problema su WhatsApp. Se puoi, aggiungi una foto.", `<div class="solution-actions"><a class="phone-book" href="${wa(msg)}" target="_blank" rel="noopener noreferrer">Scrivi su WhatsApp</a></div>${warrantyNote()}${changeButton()}`);
+          scrollToResult();
           return;
         }
 
         showIphone(selectedProblem, label);
-
-        if (window.innerWidth < 760 && result) {
-          setTimeout(() => result.scrollIntoView({ behavior: "smooth", block: "center" }), 150);
-        }
+        scrollToResult();
       });
     });
   }
@@ -421,6 +455,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     selectedModel = "";
     selectedProblem = "";
+    window.albaPendingProblem = null;
     if (model) model.value = "";
     if (modelSearch) modelSearch.value = "";
     activeFamily = "Tutti";
