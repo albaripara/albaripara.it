@@ -90,8 +90,12 @@
 
   // «Vedi il prezzo»: vai al preventivatore; scelto il modello, il problema è già selezionato
   hero.querySelector('.hg-go').addEventListener('click', function () {
-    window.albaPendingProblem = PROBLEM[selected] || 'other';
-    var target = document.getElementById('comparatore');
+    var problem = PROBLEM[selected] || 'other';
+    var mode = window.albaPreventivo ? window.albaPreventivo.setProblem(problem) : (window.albaPendingProblem = problem, 'model');
+    // modello già scelto → vai al risultato; altrimenti alla scelta del modello
+    var target = mode === 'result' ? document.getElementById('result') : (document.querySelector('.lab-panel--models') || document.getElementById('comparatore'));
     if (target) target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    // quando torna su, trova di nuovo la scelta del danno (non la scheda vecchia)
+    setTimeout(function () { select(null); }, 700);
   });
 })();

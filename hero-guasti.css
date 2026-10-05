@@ -57,7 +57,7 @@
   .hg h1{font-size:31px!important;line-height:1.02!important;text-align:center!important;margin:0!important}
   .hg h1 br{display:none}
   .hg .premium-text,.hg-facts{display:none!important}
-  .hg-frame{aspect-ratio:auto;height:calc(100svh - 218px);min-height:430px;max-height:760px;border-radius:24px;margin:0}
+  .hg-frame{aspect-ratio:auto;height:calc(100svh - 218px);min-height:430px;max-height:760px;border-radius:24px;margin:0 auto;width:100%;max-width:560px}
   .hg-panel{left:8px;right:8px;bottom:8px}
   .hg-pick{padding:13px 0 12px;border-radius:20px}
   .hg-ask{padding:0 14px;text-align:center}
