@@ -30,6 +30,9 @@
 
   // video: niente movimento se il cliente ha chiesto «riduci movimento»; si ferma fuori schermo
   if (media && media.tagName === 'VIDEO') {
+    // telefono: versione più leggera del video (se il browser non ha già scelto quella giusta)
+    var narrow = window.matchMedia && window.matchMedia('(max-width: 860px)').matches;
+    if (narrow && !/banco-m\.mp4/.test(media.currentSrc || '')) { media.src = 'assets/banco-m.mp4'; }
     if (reduce) { media.removeAttribute('autoplay'); media.pause(); }
     else if ('IntersectionObserver' in window) {
       new IntersectionObserver(function (e) {

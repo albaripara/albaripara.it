@@ -1,0 +1,40 @@
+/* Prima e dopo + Precisione di bottega — ALBA Ripara */
+.pd,.bottega{padding:84px 0;background:#07100b;color:#f3f8f1}
+.bottega{padding-top:0}
+.pd .wrap,.bottega .wrap{width:min(1200px,calc(100% - 48px))!important;margin:0 auto}
+.pd-eyebrow{margin:0 0 12px!important;font-size:12px!important;font-weight:900!important;letter-spacing:.16em!important;color:#b7ff5a!important;text-align:left!important}
+.pd h2,.bottega h2{margin:0 0 10px!important;font-size:clamp(34px,4.2vw,56px)!important;line-height:1!important;letter-spacing:-.04em!important;color:#fff!important;text-align:left!important}
+.pd-lead{margin:0 0 32px!important;font-size:18px!important;color:rgba(243,248,241,.72)!important;text-align:left!important}
+
+.pd-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.pd-card{margin:0}
+.pd-view{--pos:50%;position:relative;aspect-ratio:4/5;border-radius:24px;overflow:hidden;background:#0b1711;box-shadow:0 0 0 1px rgba(243,248,241,.08);
+  touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.pd-view img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.pd-after{clip-path:inset(0 0 0 var(--pos))}
+.pd-handle{position:absolute;top:0;bottom:0;left:var(--pos);width:3px;margin-left:-1.5px;background:#b7ff5a;box-shadow:0 0 0 1px rgba(7,16,11,.25);pointer-events:none}
+.pd-handle::after{content:"‹ ›";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;
+  background:#b7ff5a;color:#07100b;font-weight:900;font-size:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+.pd-range{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;-webkit-appearance:none;appearance:none}
+.pd-range:focus-visible + .pd-handle,.pd-view:focus-within .pd-handle{outline:none}
+.pd-view:focus-within{box-shadow:0 0 0 3px #b7ff5a}
+.pd-tag{position:absolute;top:14px;z-index:2;padding:6px 11px;border-radius:999px;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;pointer-events:none}
+.pd-tag--b{left:14px;background:rgba(7,16,11,.7);color:#fff}
+.pd-tag--a{right:14px;background:#b7ff5a;color:#07100b}
+.pd-card figcaption{margin-top:12px;font-size:15px;font-weight:700;color:rgba(243,248,241,.85)}
+
+.bottega-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:28px}
+.bottega-grid article{padding:22px 20px;border-radius:22px;background:rgba(243,248,241,.04);border:1px solid rgba(243,248,241,.1)}
+.bottega-grid span{font-size:13px;font-weight:900;color:#b7ff5a;letter-spacing:.1em}
+.bottega-grid h3{margin:10px 0 8px!important;font-size:19px!important;line-height:1.2!important;color:#fff!important}
+.bottega-grid p{margin:0!important;font-size:15px!important;line-height:1.5!important;color:rgba(243,248,241,.72)!important}
+
+@media (max-width:860px){
+  .pd{padding:56px 0}
+  .bottega{padding:0 0 56px}
+  .pd .wrap,.bottega .wrap{width:calc(100% - 30px)!important}
+  .pd h2,.bottega h2{font-size:32px!important}
+  .pd-lead{font-size:16px!important;margin-bottom:20px!important}
+  .pd-grid{grid-template-columns:1fr;gap:22px}
+  .bottega-grid{grid-template-columns:1fr;gap:10px;margin-top:18px}
+}
