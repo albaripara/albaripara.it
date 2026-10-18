@@ -136,7 +136,7 @@
     return value;
   }
 
-  function estimate(input) {
+  function computeEstimate(input) {
     const state = Object.assign({
       brand: "", model: "", storage: "", tests: {}, displayHistory: "",
       condition: "", battery: "", account: ""
@@ -277,6 +277,25 @@
       retailReference: retail,
       technicalDeduction: euro(technicalDeduction)
     };
+  }
+
+  // Più memoria non deve mai valere meno: i gradini di reserveProfile possono far scendere
+  // l'offerta quando il valore di rivendita supera una soglia. Si prende il massimo tra la
+  // memoria scelta e i tagli inferiori dello stesso modello, a parità di altre risposte.
+  const MONOTONIC_TYPES = ["high_interest", "selective", "selective_low", "technical_offer"];
+
+  function estimate(input) {
+    const result = computeEstimate(input);
+    const item = priceData[input?.brand]?.[input?.model];
+    if (!item || !MONOTONIC_TYPES.includes(result.resultType)) return result;
+    const chosen = Number(input.storage);
+    let best = result.cashValue;
+    Object.keys(item.storage || {}).map(Number).filter((gb) => gb < chosen).forEach((gb) => {
+      const lower = computeEstimate(Object.assign({}, input, { storage: gb }));
+      if (MONOTONIC_TYPES.includes(lower.resultType) && lower.cashValue > best) best = lower.cashValue;
+    });
+    if (best === result.cashValue) return result;
+    return Object.assign({}, result, { cashValue: best, cash: `circa ${best}€` });
   }
 
   const api = Object.freeze({ priceData, config, estimate, formatStorage, currentRetail });
