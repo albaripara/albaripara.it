@@ -6,7 +6,8 @@ const { chromium } = require('playwright');
   const errs = [];
   p.on('pageerror', e => errs.push(String(e)));
   p.on('console', m => { if (m.type()==='error') errs.push(m.text()); });
-  await p.goto(process.argv[2] || 'https://www.albaripara.it/', { waitUntil: 'networkidle' });
+  await p.goto(process.argv[2] || 'https://www.albaripara.it/', { waitUntil: 'load' });
+  await p.waitForTimeout(5000); // tempo per il listino del gestionale (le preview Netlify non arrivano mai a networkidle)
   const models = await p.$$eval('#model option', o => o.map(x => x.value).filter(Boolean));
   const out = [];
   for (const m of models) {
