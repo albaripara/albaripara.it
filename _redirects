@@ -10,3 +10,12 @@
 
 /telefoni-nuovi.html /disponibili.html 301
 /telefoni-nuovi /disponibili.html 301
+
+# File interni del repository: non vanno serviti dal sito pubblico
+/CLAUDE.md /index.html 404!
+/README.md /index.html 404!
+/CHANGELOG.md /index.html 404!
+/docs/* /index.html 404!
+/tests/* /index.html 404!
+/tools/* /index.html 404!
+/.claude/* /index.html 404!
