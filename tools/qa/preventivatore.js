@@ -11,7 +11,7 @@ const { chromium } = require('playwright');
   const models = await p.$$eval('#model option', o => o.map(x => x.value).filter(Boolean));
   const out = [];
   for (const m of models) {
-    for (const pr of ['display','battery','charge','camera']) {
+    for (const pr of ['display','battery','charge','camera','back']) {
       const r = await p.evaluate(([m,pr]) => {
         const sel = document.getElementById('model'); sel.value = m; sel.dispatchEvent(new Event('change'));
         document.querySelector(`#problems button[data-problem="${pr}"]`).click();

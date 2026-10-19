@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Listino collegato al gestionale: i prezzi sopra sono la riserva se il gestionale non risponde.
   const LISTINO_URL = "https://gestionale-riparazioni.vercel.app/api/public/listino";
   window.albaIphonePrices = iphonePrices; // usato dal telefono 3D per i prezzi "a partire da"
-  const PRICE_KEYS = ["displayRigenerato", "displayOriginale", "batteria", "batteriaOriginale", "ricarica", "camera"];
+  const PRICE_KEYS = ["displayRigenerato", "displayOriginale", "batteria", "batteriaOriginale", "ricarica", "camera", "vetroPosteriore", "scocca", "telaio"];
   (function loadListino() {
     if (typeof fetch !== "function") return;
     const controller = typeof AbortController === "function" ? new AbortController() : null;
@@ -123,6 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
     battery: "Batteria",
     charge: "Ricarica",
     camera: "Fotocamera",
+    back: "Retro e scocca",
     transfer: "Trasferimento dati",
     reset: "Ripristino",
     backup: "Backup + aggiornamento",
@@ -134,6 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
     battery: "Batteria che dura poco, telefono che si spegne o percentuale instabile.",
     charge: "Telefono che non carica bene o connettore allentato.",
     camera: "Fotocamera posteriore da sostituire o verificare.",
+    back: "Vetro dietro rotto, scocca o telaio piegati.",
     transfer: "Passaggio dati da un telefono all'altro.",
     reset: "Ripristino dati di fabbrica.",
     backup: "Backup e aggiornamento software.",
@@ -368,10 +370,21 @@ document.addEventListener("DOMContentLoaded", () => {
         ["Sostituzione fotocamera", data.camera, "Ricambio da verificare"]
       ]));
     }
+
+    if (problem === "back") {
+      if (typeof window.albaTrack === "function") window.albaTrack("preventivo_result_viewed", { device_model: selectedModel, problem: problem, result_type: "back" });
+      return setResult("Retro e scocca", "Sempre ricambi originali Apple smontati, mai compatibili.", buildOptions(label, [
+        ["Vetro posteriore", data.vetroPosteriore, "Solo il vetro dietro"],
+        ["Scocca completa", data.scocca, "Retro e telaio insieme"],
+        ["Telaio", data.telaio, "Telaio piegato o ammaccato"]
+      ]));
+    }
   }
 
   function buildOptions(label, options) {
-    const visibleOptions = options.filter(([name, price]) => !(name === "Batteria originale" && price == null));
+    // Batteria originale e interventi sul retro compaiono solo se il modello ha un prezzo.
+    const hideWithoutPrice = ["Batteria originale", "Vetro posteriore", "Scocca completa", "Telaio"];
+    const visibleOptions = options.filter(([name, price]) => !(hideWithoutPrice.includes(name) && price == null));
 
     if (!visibleOptions.length) {
       const msg = `Ciao ALBA Ripara, vorrei un preventivo per ${selectedModel}. Problema: ${label}.`;
