@@ -16,8 +16,8 @@
     scocca:   { x: 88, y: 50, z: 1.8 },
     scheda:   { x: 74, y: 28, z: 2.1 }
   };
-  var PRICE_KEY = { display: 'displayRigenerato', batteria: 'batteria', camera: 'camera', ricarica: 'ricarica' };
-  var PROBLEM = { display: 'display', batteria: 'battery', camera: 'camera', ricarica: 'charge', altro: 'other' };
+  var PRICE_KEY = { display: 'displayRigenerato', batteria: 'batteria', camera: 'camera', ricarica: 'ricarica', retro: 'vetroPosteriore', scocca: 'telaio' };
+  var PROBLEM = { display: 'display', batteria: 'battery', camera: 'camera', ricarica: 'charge', retro: 'back', scocca: 'back', altro: 'other' };
 
   var chips = [].slice.call(hero.querySelectorAll('[data-part]'));
   var cards = [].slice.call(hero.querySelectorAll('[data-card]'));
