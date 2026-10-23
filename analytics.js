@@ -4,9 +4,11 @@
   const config = window.ALBA_TRACKING_CONFIG || {};
   const GA_ID = String(config.ga4MeasurementId || "").trim();
   const CLARITY_ID = String(config.clarityProjectId || "").trim();
+  const METRICOOL_HASH = String(config.metricoolHash || "").trim();
   const DEBUG = Boolean(config.debug);
   let analyticsLoaded = false;
   let clarityLoaded = false;
+  let metricoolLoaded = false;
 
   window.dataLayer = window.dataLayer || [];
   window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
@@ -174,6 +176,17 @@
     });
   }
 
+  // Metricool (brand albaripara): conteggio visite e sorgenti, senza cookie, solo dopo consenso statistiche.
+  function loadMetricool() {
+    if (!/^[a-f0-9]{32}$/i.test(METRICOOL_HASH) || metricoolLoaded) return;
+    metricoolLoaded = true;
+    loadScript("https://tracker.metricool.com/resources/be.js", "alba-metricool", function () {
+      if (window.beTracker && typeof window.beTracker.t === "function") {
+        window.beTracker.t({ hash: METRICOOL_HASH });
+      }
+    });
+  }
+
   function clearCookie(name) {
     const domains = ["", window.location.hostname, `.${window.location.hostname.replace(/^www\./, "")}`];
     domains.forEach((domain) => {
@@ -197,6 +210,7 @@
   window.albaLoadAnalytics = function () {
     loadGA4();
     loadClarity();
+    loadMetricool();
   };
 
   window.albaUpdateAnalyticsConsent = function (granted) {
@@ -246,6 +260,7 @@
   window.ALBA_TRACKING_STATUS = Object.freeze({
     ga4Configured: /^G-[A-Z0-9]+$/i.test(GA_ID),
     clarityConfigured: Boolean(CLARITY_ID),
+    metricoolConfigured: /^[a-f0-9]{32}$/i.test(METRICOOL_HASH),
     whatsappReference: Boolean(config.whatsappReference)
   });
 })();

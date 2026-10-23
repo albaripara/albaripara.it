@@ -1,6 +1,6 @@
 # Problemi aperti (ordinati per gravità)
 
-Aggiornato: 2026-10-19.
+Aggiornato: 2026-10-23.
 
 ## Alta
 1. **Valutatore usato: più memoria = valore più basso** in 15 modelli. *Corretto nel branch `audit/presa-in-carico`.*
@@ -14,7 +14,7 @@ Aggiornato: 2026-10-19.
 5. **Campagna «Check batteria» non ancora lanciata** (idea, confermato da Jack il 18/10). Netlify Forms è disattivato: prima del lancio va attivato (Netlify → Forms → Enable), ripubblicato e provato con un invio in modalità `test-interno`, altrimenti le richieste vanno perse (oggi l'invio risponde 404).
 6. ~~Preventivatore: per iPhone 8, 8 Plus, SE 2020 e SE 2022 compare «Display rigenerato: Preventivo in negozio».~~ Risolto il 19/10/2026: prezzi aggiunti nel gestionale.
 7. iPhone 16e e serie 17 senza prezzi nel listino: mostrano «Preventivo in negozio» (comportamento corretto, prezzi da aggiungere nel gestionale se disponibili).
-8. Conversioni: GA4 registra clic su WhatsApp/telefono (`click_whatsapp`, `click_phone`), non i contatti effettivi. I contatti reali si riconoscono dal codice «Rif. sito:» nei messaggi WhatsApp e dall'invio del modulo (pagina di conferma). Search Console e proprietà GA4 non verificate per mancanza di accesso.
+8. Conversioni: GA4 registra clic su WhatsApp/telefono (`click_whatsapp`, `click_phone`), non i contatti effettivi. I contatti reali si riconoscono dal codice «Rif. sito:» nei messaggi WhatsApp e dall'invio del modulo (pagina di conferma). Search Console e proprietà GA4 non verificate per mancanza di accesso. Dal 23/10/2026 anche Metricool conta visite e sorgenti, ma solo per chi accetta le statistiche nel banner: i numeri saranno più bassi delle visite reali.
 
 ## Verificati e a posto (2026-10-18)
 - Responsive: 18 pagine × 5 schermi (320, 390, 412, 768, 1440 px) senza scorrimento orizzontale né errori JavaScript.
