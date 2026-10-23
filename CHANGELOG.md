@@ -1,5 +1,14 @@
 # Registro delle versioni
 
+## 2026-10-23 · correzioni dopo il controllo del sito (online: deploy `6adbd714235065d94783ff7b`, rollback senza Metricool: `6adbd4f3bd2a4c17bf1c546e`)
+- Tolta la campagna «Check batteria» (richiesta di Jack): pagine, script e stile eliminati; i vecchi link (`/check-batteria*`) portano con un 301 a `sostituzione-batteria-iphone-altopascio.html`. Privacy senza riferimenti a Netlify Forms.
+- Nuova pagina d'errore `404.html` in italiano, con percorsi assoluti (funziona anche su indirizzi annidati).
+- Contatti: tolte le menzioni di Samsung, Xiaomi e altre marche.
+- Ricambi e garanzia: «regola d'arte» sostituito con «fatta bene».
+- Trasferimento dati: i tre riquadri e il messaggio WhatsApp ora parlano di passaggio dati, non di ricambi.
+- Sitemap: lastmod 2026-10-23.
+- Ripristinato `disponibili.js`, presente online ma mancante nel repository.
+
 ## 2026-10-23 · allineamento con il sito online
 - Scoperto che www.albaripara.it è servito dal progetto Netlify `albaripara-sito`, caricato a mano il 21/10/2026 (deploy `6ad86f04a455a9570dd0d01c`, rollback: ripubblicare questo), e non da GitHub. La versione online aveva modifiche mai salvate su GitHub (indirizzi senza .html, banner cookie semplificato, listino usato del 19/10 con telefono 3D, filtri disponibili, nuovi `disponibili.css` e `valutazione-3d.css`): ora copiate nel repository.
 - Testi su Metricool di banner cookie, cookie e privacy riapplicati sulla versione online.

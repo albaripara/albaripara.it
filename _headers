@@ -10,3 +10,6 @@
   X-Permitted-Cross-Domain-Policies: none
   X-XSS-Protection: 0
   Origin-Agent-Cluster: ?1
+
+/assets/*
+  Cache-Control: public, max-age=604800
