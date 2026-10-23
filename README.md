@@ -5,7 +5,6 @@ Sito pubblico di ALBA Ripara (riparazione iPhone e smartphone, Altopascio). HTML
 ## Struttura
 - `index.html` + `script.js`: home e preventivatore riparazioni iPhone (prezzi dal gestionale, riserva in `script.js`).
 - `valutazione-usato.html` + `valutazione-usato.js` + `valutazione-engine.js`: valutatore telefoni usati.
-- `check-batteria*.{html,js,css}`: campagna check batteria su invito (`?ref=`), modulo Netlify Forms.
 - `analytics.js`, `cookie-consent.js`, `tracking-config.js`: GA4 con consenso.
 - `_headers`, `_redirects`: sicurezza e reindirizzamenti Netlify.
 

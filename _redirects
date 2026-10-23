@@ -19,3 +19,8 @@
 /tests/* /index.html 404!
 /tools/* /index.html 404!
 /.claude/* /index.html 404!
+
+/check-batteria /sostituzione-batteria-iphone-altopascio.html 301
+/check-batteria.html /sostituzione-batteria-iphone-altopascio.html 301
+/check-batteria-grazie /sostituzione-batteria-iphone-altopascio.html 301
+/check-batteria-grazie.html /sostituzione-batteria-iphone-altopascio.html 301

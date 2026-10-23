@@ -10,7 +10,7 @@ Proprietario: Jack (scrive in italiano: tutto ciò che legge va in italiano).
 - DNS: Aruba. **Non toccare i DNS senza autorizzazione esplicita di Jack.**
 - Prezzi riparazioni: letti a runtime da `https://gestionale-riparazioni.vercel.app/api/public/listino`; i valori in `script.js` sono solo riserva. Il gestionale è un progetto separato: **non modificarlo da qui**.
 - Tracking: GA4 `G-6NVQ86GFXF` in `tracking-config.js`, caricato solo dopo consenso cookie (`analytics.js`, `cookie-consent.js`).
-- Netlify Forms: usati da `check-batteria.html`. Vedi `docs/PROBLEMI-APERTI.md`.
+- Netlify Forms: non usati (la campagna check batteria è stata tolta il 23/10/2026).
 
 ## Dati aziendali (fonte di verità)
 - Nome: "ALBA Ripara". Tel/WhatsApp 0583 1797237 (`+3905831797237`). Email albaripara@gmail.com. P.IVA 02532170509 (ALBA-ENERGIA SRL).

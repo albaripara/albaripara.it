@@ -11,8 +11,10 @@ Aggiornato: 2026-10-23.
 3. **Repository pubblico.** Va reso privato (GitHub → Settings → Change visibility). Netlify continua a pubblicare se l'app Netlify ha accesso al repository.
 4. **Foto della vetrina con orari vecchi** (lun–ven 9.30–13.30 / 15.30–19.00). La foto è vecchia: non usarla su sito e social; verificare che la vetrina reale riporti gli orari attuali.
 
+- **Immagini in `assets/` diverse da quelle online**: stessi nomi, ma i file su www.albaripara.it pesano circa 5,7 KB in più (es. `favicon-32.png` 6649 byte online contro 879 nel repository). Da capire quale versione tenere prima del prossimo caricamento.
+
 ## Bassa
-5. **Campagna «Check batteria» non ancora lanciata** (idea, confermato da Jack il 18/10). Netlify Forms è disattivato: prima del lancio va attivato (Netlify → Forms → Enable), ripubblicato e provato con un invio in modalità `test-interno`, altrimenti le richieste vanno perse (oggi l'invio risponde 404).
+5. ~~**Campagna «Check batteria» non ancora lanciata**~~ Pagina tolta il 23/10/2026 su richiesta di Jack (i vecchi link portano alla pagina batteria). Testo originale: (idea, confermato da Jack il 18/10). Netlify Forms è disattivato: prima del lancio va attivato (Netlify → Forms → Enable), ripubblicato e provato con un invio in modalità `test-interno`, altrimenti le richieste vanno perse (oggi l'invio risponde 404).
 6. ~~Preventivatore: per iPhone 8, 8 Plus, SE 2020 e SE 2022 compare «Display rigenerato: Preventivo in negozio».~~ Risolto il 19/10/2026: prezzi aggiunti nel gestionale.
 7. iPhone 16e e serie 17 senza prezzi nel listino: mostrano «Preventivo in negozio» (comportamento corretto, prezzi da aggiungere nel gestionale se disponibili).
 8. Conversioni: GA4 registra clic su WhatsApp/telefono (`click_whatsapp`, `click_phone`), non i contatti effettivi. I contatti reali si riconoscono dal codice «Rif. sito:» nei messaggi WhatsApp e dall'invio del modulo (pagina di conferma). Search Console e proprietà GA4 non verificate per mancanza di accesso. Dal 23/10/2026 anche Metricool conta visite e sorgenti, ma solo per chi accetta le statistiche nel banner: i numeri saranno più bassi delle visite reali.
