@@ -1,7 +1,7 @@
 (function () {
   "use strict";
   const KEY = "alba_cookie_consent_v1";
-  const VERSION = "2026-08-21-v45.7";
+  const VERSION = "2026-10-23-metricool";
   const MAX_AGE_MS = 183 * 24 * 60 * 60 * 1000;
   let memoryConsent = null;
   let lastFocusedElement = null;
@@ -91,7 +91,7 @@
     banner.innerHTML = `
       <div class="cookie-banner__content">
         <p class="cookie-banner__eyebrow">Privacy e cookie</p>
-        <p>Le statistiche (Google Analytics) le attiviamo solo se dici di sì. Ci servono per capire quali pagine funzionano.</p>
+        <p>Le statistiche (Google Analytics e Metricool) le attiviamo solo se dici di sì. Ci servono per capire quali pagine funzionano.</p>
       </div>
       <div class="cookie-banner__actions">
         <button type="button" class="cookie-btn cookie-btn--ghost" data-cookie-reject>Rifiuta</button>
@@ -118,7 +118,7 @@
         <h2>Gestisci cookie e tracciamenti</h2>
         <p class="cookie-modal__intro">I cookie tecnici sono necessari. Le statistiche restano disattivate finché non le autorizzi.</p>
         <div class="cookie-choice cookie-choice--locked"><div><strong>Necessari</strong><p>Servono per sicurezza, preferenze e funzionamento base del sito.</p></div><span>Sempre attivi</span></div>
-        <label class="cookie-choice"><div><strong>Statistiche</strong><p>Google Analytics e Microsoft Clarity per visite, conversioni e utilizzo delle pagine, solo dopo consenso.</p></div><input type="checkbox" data-cookie-analytics ${current.analytics ? "checked" : ""}></label>
+        <label class="cookie-choice"><div><strong>Statistiche</strong><p>Google Analytics, Microsoft Clarity e Metricool per visite, provenienza, conversioni e utilizzo delle pagine, solo dopo consenso.</p></div><input type="checkbox" data-cookie-analytics ${current.analytics ? "checked" : ""}></label>
         <div class="cookie-modal__actions"><button type="button" class="cookie-btn cookie-btn--ghost" data-cookie-reject>Rifiuta tutto</button><button type="button" class="cookie-btn cookie-btn--primary" data-cookie-save>Salva preferenze</button></div>
         <p class="cookie-modal__small"><a href="cookie.html">Leggi la Cookie Policy</a> · <a href="privacy.html">Informativa Privacy</a></p>
       </div>`;
