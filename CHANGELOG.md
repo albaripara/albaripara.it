@@ -1,5 +1,10 @@
 # Registro delle versioni
 
+## 2026-10-23 · statistiche Metricool
+- Aggiunto il tracciamento visite di Metricool (brand albaripara): conta visite e provenienza (Instagram, Facebook, Google…) nella sezione «Sito web» di Metricool. Si attiva solo dopo il consenso «Statistiche», come Google Analytics; non usa cookie.
+- Banner cookie, informativa cookie e privacy aggiornati con Metricool. Il banner viene richiesto di nuovo una volta a tutti i visitatori, perché la lista dei servizi è cambiata.
+- `_headers`: `tracker.metricool.com` consentito nella Content-Security-Policy (script e immagini).
+
 ## 2026-10-19 · preventivatore retro e scocca
 - Preventivatore: nuovo problema «Retro» con vetro posteriore, scocca completa e telaio, prezzi letti dal gestionale (chiavi `vetroPosteriore`, `scocca`, `telaio`). Senza prezzo per il modello compare «Preventivo in negozio».
 - Hero: i guasti «Vetro dietro» e «Scocca» mostrano il prezzo «a partire da» e portano al problema «Retro» del preventivatore.
