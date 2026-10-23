@@ -91,13 +91,12 @@
     banner.innerHTML = `
       <div class="cookie-banner__content">
         <p class="cookie-banner__eyebrow">Privacy e cookie</p>
-        <h2>Usiamo solo ciò che serve.</h2>
-        <p>Il sito usa strumenti tecnici necessari. Google Analytics, Microsoft Clarity e Metricool vengono caricati soltanto se autorizzi le statistiche. Puoi accettare, rifiutare o scegliere le preferenze.</p>
+        <p>Le statistiche (Google Analytics e Metricool) le attiviamo solo se dici di sì. Ci servono per capire quali pagine funzionano.</p>
       </div>
       <div class="cookie-banner__actions">
         <button type="button" class="cookie-btn cookie-btn--ghost" data-cookie-reject>Rifiuta</button>
         <button type="button" class="cookie-btn cookie-btn--ghost" data-cookie-preferences>Preferenze</button>
-        <button type="button" class="cookie-btn cookie-btn--primary" data-cookie-accept>Accetta statistiche</button>
+        <button type="button" class="cookie-btn cookie-btn--primary" data-cookie-accept>Accetta</button>
       </div>`;
     document.body.appendChild(banner);
     document.body.classList.add("cookie-banner-open");

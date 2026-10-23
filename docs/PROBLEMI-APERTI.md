@@ -6,6 +6,7 @@ Aggiornato: 2026-10-23.
 1. **Valutatore usato: più memoria = valore più basso** in 15 modelli. *Corretto nel branch `audit/presa-in-carico`.*
 
 ## Media
+- **Sito pubblicato fuori da GitHub.** Il dominio è servito da `albaripara-sito`, caricato a mano: un merge su `main` non pubblica nulla. Per ogni rilascio confrontare online e `main`, poi caricare `main` su `albaripara-sito`. Valutare con Jack se collegare `albaripara-sito` a GitHub.
 2. **Valutatore: modelli superiori valutati meno di quelli inferiori**, es. iPhone 16 Pro Max 256GB 570€ contro iPhone 16 Pro 128GB 575€; iPhone 12 Pro Max 195€ contro 12 Pro 205€. Deriva dai prezzi di rivendita in `valutazione-engine.js`: da rivedere con il proprietario, non si cambiano i valori da soli.
 3. **Repository pubblico.** Va reso privato (GitHub → Settings → Change visibility). Netlify continua a pubblicare se l'app Netlify ha accesso al repository.
 4. **Foto della vetrina con orari vecchi** (lun–ven 9.30–13.30 / 15.30–19.00). La foto è vecchia: non usarla su sito e social; verificare che la vetrina reale riporti gli orari attuali.
