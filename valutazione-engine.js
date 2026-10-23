@@ -1,69 +1,63 @@
 (function (global) {
   "use strict";
 
+  // Listino usato ricalcolato il 2026-10-19 sul mercato di ottobre 2026 (Back Market, TrenDevice).
+  // resale = prezzo a cui ALBA Ripara rivende il telefono in negozio (IVA a margine, passaggio dati compreso),
+  // taglio di memoria più piccolo, condizioni buone, batteria sopra l'85%. storage = differenza per gli altri tagli.
+  // look = come disegnare il telefono 3D (fotocamere, notch, tasto Home).
+  // onRequest = niente prezzo automatico (decisione di Jack 19/10: serie 17 e 18 solo su richiesta, se capita l'occasione).
   const priceData = {
     iphone: {
-      "iPhone SE 2020": { resale: 120, storage: {64:0,128:20,256:40}, demand: "low" },
-      "iPhone SE 2022": { resale: 180, storage: {64:0,128:25,256:45}, demand: "medium" },
-      "iPhone XS": { resale: 150, storage: {64:0,256:35}, demand: "low" },
-      "iPhone 11": { resale: 210, storage: {64:0,128:30}, demand: "medium" },
-      "iPhone 11 Pro": { resale: 250, storage: {64:0,256:40,512:65}, demand: "medium" },
-      "iPhone 11 Pro Max": { resale: 290, storage: {64:0,256:45,512:70}, demand: "medium" },
-      "iPhone 12 mini": { resale: 210, storage: {64:0,128:25,256:50}, demand: "medium" },
-      "iPhone 12": { resale: 230, storage: {64:0,128:30,256:55}, demand: "high" },
-      "iPhone 12 Pro": { resale: 310, storage: {128:0,256:35,512:65}, demand: "high" },
-      "iPhone 12 Pro Max": { resale: 360, storage: {128:0,256:40,512:75}, demand: "high" },
-      "iPhone 13 mini": { resale: 290, storage: {128:0,256:35,512:65}, demand: "high" },
-      "iPhone 13": { resale: 295, storage: {128:0,256:35,512:65}, demand: "high" },
-      "iPhone 13 Pro": { resale: 410, storage: {128:0,256:40,512:80,1024:110}, demand: "high" },
-      "iPhone 13 Pro Max": { resale: 465, storage: {128:0,256:45,512:90,1024:120}, demand: "high" },
-      "iPhone 14": { resale: 305, storage: {128:0,256:45,512:105}, demand: "high" },
-      "iPhone 14 Plus": { resale: 380, storage: {128:0,256:45,512:90}, demand: "high" },
-      "iPhone 14 Pro": { resale: 490, storage: {128:0,256:25,512:65,1024:110}, demand: "high" },
-      "iPhone 14 Pro Max": { resale: 550, storage: {128:0,256:35,512:70,1024:150}, demand: "high" },
-      "iPhone 15": { resale: 420, storage: {128:0,256:75,512:160}, demand: "high" },
-      "iPhone 15 Plus": { resale: 485, storage: {128:0,256:60,512:120}, demand: "high" },
-      "iPhone 15 Pro": { resale: 590, storage: {128:0,256:25,512:80,1024:145}, demand: "high" },
-      "iPhone 15 Pro Max": { resale: 700, storage: {256:0,512:70,1024:140}, demand: "high" },
-      "iPhone 16": { resale: 610, storage: {128:0,256:60,512:135}, demand: "high" },
-      "iPhone 16 Plus": { resale: 680, storage: {128:0,256:70,512:145}, demand: "high" },
-      "iPhone 16 Pro": { resale: 820, storage: {128:0,256:80,512:160,1024:240}, demand: "high" },
-      "iPhone 16 Pro Max": { resale: 930, storage: {256:0,512:95,1024:180}, demand: "high" },
-      "iPhone 17": { resale: 740, storage: {256:0,512:100}, demand: "high" },
-      "iPhone Air": { resale: 710, storage: {256:0,512:100,1024:190}, demand: "high" },
-      "iPhone 17 Pro": { resale: 1120, storage: {256:0,512:130,1024:260}, demand: "high" },
-      "iPhone 17 Pro Max": { resale: 1250, storage: {256:0,512:120,1024:390,2048:570}, demand: "high" }
-    },
-    samsung: {
-      "Galaxy A16": { resale: 110, storage: {128:0,256:20}, demand: "low" },
-      "Galaxy A34": { resale: 180, storage: {128:0,256:35}, demand: "low" },
-      "Galaxy A54": { resale: 210, storage: {128:0,256:35}, demand: "medium" },
-      "Galaxy S21": { resale: 180, storage: {128:0,256:25}, demand: "medium" },
-      "Galaxy S22": { resale: 230, storage: {128:0,256:35}, demand: "medium" },
-      "Galaxy S22 Ultra": { resale: 360, storage: {128:0,256:30,512:65}, demand: "high" },
-      "Galaxy S23 FE": { resale: 250, storage: {128:0,256:55}, demand: "medium" },
-      "Galaxy S23": { resale: 290, storage: {128:0,256:40}, demand: "high" },
-      "Galaxy S23 Plus": { resale: 350, storage: {256:0,512:45}, demand: "high" },
-      "Galaxy S23 Ultra": { resale: 470, storage: {256:0,512:55,1024:110}, demand: "high" },
-      "Galaxy S24 FE": { resale: 340, storage: {128:0,256:45,512:90}, demand: "medium" },
-      "Galaxy S24": { resale: 365, storage: {128:0,256:50,512:100}, demand: "high" },
-      "Galaxy S24 Plus": { resale: 455, storage: {256:0,512:55}, demand: "high" },
-      "Galaxy S24 Ultra": { resale: 610, storage: {256:0,512:70,1024:140}, demand: "high" },
-      "Galaxy S25 FE": { resale: 430, storage: {128:0,256:80,512:150}, demand: "medium" },
-      "Galaxy S25": { resale: 490, storage: {128:0,256:55,512:115}, demand: "high" },
-      "Galaxy S25 Plus": { resale: 570, storage: {256:0,512:70}, demand: "high" },
-      "Galaxy S25 Ultra": { resale: 715, storage: {256:0,512:85,1024:160}, demand: "high" }
+      "iPhone SE 2020": { resale: 129, storage: {64:0,128:20,256:40}, demand: "low", look: "se" },
+      "iPhone SE 2022": { resale: 199, storage: {64:0,128:30,256:50}, demand: "low", look: "se" },
+      "iPhone 11": { resale: 189, storage: {64:0,128:30,256:50}, demand: "low", look: "dual-square" },
+      "iPhone 11 Pro": { resale: 199, storage: {64:0,256:40,512:65}, demand: "low", look: "pro-notch" },
+      "iPhone 11 Pro Max": { resale: 239, storage: {64:0,256:45,512:70}, demand: "low", look: "pro-notch" },
+      "iPhone 12 mini": { resale: 219, storage: {64:0,128:25,256:50}, demand: "low", look: "dual-square" },
+      "iPhone 12": { resale: 249, storage: {64:0,128:30,256:55}, demand: "medium", look: "dual-square" },
+      "iPhone 12 Pro": { resale: 299, storage: {128:0,256:35,512:65}, demand: "medium", look: "pro-notch" },
+      "iPhone 12 Pro Max": { resale: 359, storage: {128:0,256:40,512:75}, demand: "medium", look: "pro-notch" },
+      "iPhone 13 mini": { resale: 299, storage: {128:0,256:35,512:65}, demand: "medium", look: "dual-diagonal" },
+      "iPhone 13": { resale: 319, storage: {128:0,256:40,512:70}, demand: "high", look: "dual-diagonal" },
+      "iPhone 13 Pro": { resale: 389, storage: {128:0,256:40,512:80,1024:110}, demand: "high", look: "pro-notch" },
+      "iPhone 13 Pro Max": { resale: 419, storage: {128:0,256:45,512:90,1024:120}, demand: "high", look: "pro-notch" },
+      "iPhone 14": { resale: 369, storage: {128:0,256:45,512:100}, demand: "high", look: "dual-diagonal" },
+      "iPhone 14 Plus": { resale: 399, storage: {128:0,256:45,512:90}, demand: "medium", look: "dual-diagonal" },
+      "iPhone 14 Pro": { resale: 479, storage: {128:0,256:40,512:80,1024:120}, demand: "high", look: "pro-island" },
+      "iPhone 14 Pro Max": { resale: 539, storage: {128:0,256:50,512:90,1024:150}, demand: "high", look: "pro-island" },
+      "iPhone 15": { resale: 479, storage: {128:0,256:60,512:140}, demand: "high", look: "dual-diagonal-island" },
+      "iPhone 15 Plus": { resale: 519, storage: {128:0,256:60,512:120}, demand: "medium", look: "dual-diagonal-island" },
+      "iPhone 15 Pro": { resale: 569, storage: {128:0,256:50,512:100,1024:160}, demand: "high", look: "pro-island" },
+      "iPhone 15 Pro Max": { resale: 649, storage: {256:0,512:80,1024:150}, demand: "high", look: "pro-island" },
+      "iPhone 16e": { resale: 499, storage: {128:0,256:60,512:150}, demand: "medium", look: "single-notch" },
+      "iPhone 16": { resale: 619, storage: {128:0,256:70,512:150}, demand: "high", look: "dual-vertical" },
+      "iPhone 16 Plus": { resale: 679, storage: {128:0,256:70,512:150}, demand: "medium", look: "dual-vertical" },
+      "iPhone 16 Pro": { resale: 729, storage: {128:0,256:70,512:150,1024:240}, demand: "high", look: "pro-island" },
+      "iPhone 16 Pro Max": { resale: 819, storage: {256:0,512:90,1024:180}, demand: "high", look: "pro-island" },
+      "iPhone 17e": { resale: 569, storage: {256:0,512:110}, demand: "medium", look: "single-island", onRequest: true },
+      "iPhone 17": { resale: 819, storage: {256:0,512:110}, demand: "high", look: "dual-vertical", onRequest: true },
+      "iPhone Air": { resale: 789, storage: {256:0,512:100,1024:190}, demand: "medium", look: "air", onRequest: true },
+      "iPhone 17 Pro": { resale: 1049, storage: {256:0,512:140,1024:280}, demand: "high", look: "pro-plateau", onRequest: true },
+      "iPhone 17 Pro Max": { resale: 1149, storage: {256:0,512:140,1024:300,2048:560}, demand: "high", look: "pro-plateau", onRequest: true },
+      "iPhone 18 Pro": { resale: 1249, storage: {256:0,512:150,1024:450,2048:900}, demand: "high", look: "pro-plateau", onRequest: true },
+      "iPhone 18 Pro Max": { resale: 1399, storage: {256:0,512:150,1024:450,2048:900}, demand: "high", look: "pro-plateau", onRequest: true }
     }
   };
 
   const config = Object.freeze({
-    pricingVersion: "2026-08-21",
-    marketReferenceDate: "2026-08-21",
+    pricingVersion: "2026-10-19",
+    marketReferenceDate: "2026-10-19",
     minimumRecoveryOffer: 20,
     motherboardOffer: 50,
     motherboardLabCost: 100,
     labCandidateMinRetail: 280,
-    minimumLabMarginAfterReserves: 70
+    minimumLabMarginAfterReserves: 70,
+    // Regola di Jack: rivende a +150/200 € sul prezzo d'acquisto (IVA a margine e passaggio dati compresi).
+    resaleMarginMin: 150,
+    resaleMarginMax: 200,
+    tradeInDiscount: 20,
+    cashOnlyRate: 0.1,
+    cashOnlyMinGap: 30
   });
 
   function clamp(value, min, max) {
@@ -111,9 +105,14 @@
     return { margin, preparation, warranty, depreciation, marginTaxReserve };
   }
 
-  function healthyPurchaseValue(retail, demand) {
-    const reserves = reserveProfile(retail, demand);
-    return euro(retail - reserves.margin - reserves.preparation - reserves.warranty - reserves.depreciation - reserves.marginTaxReserve);
+  // Quanto resta ad ALBA Ripara tra acquisto e rivendita: 150 € fino a 500 € di rivendita,
+  // poi sale piano fino a 200 € (telefoni da 1000 € in su).
+  function resaleMargin(retail) {
+    return clamp(config.resaleMarginMin + (retail - 500) * 0.1, config.resaleMarginMin, config.resaleMarginMax);
+  }
+
+  function healthyPurchaseValue(retail) {
+    return euro(retail - resaleMargin(retail));
   }
 
   function repairCost(problemId, retail) {
@@ -123,7 +122,10 @@
       charging: clamp(retail * 0.11, 60, 140),
       audio: clamp(retail * 0.08, 45, 110),
       controls: clamp(retail * 0.15, 70, 200),
-      network: clamp(retail * 0.18, 90, 240)
+      network: clamp(retail * 0.18, 90, 240),
+      faceid: clamp(retail * 0.15, 70, 200),
+      buttons: clamp(retail * 0.08, 40, 120),
+      backglass: clamp(retail * 0.12, 60, 150)
     };
     return Number(costs[problemId] || 0);
   }
@@ -153,6 +155,15 @@
       };
     }
 
+    if (item.onRequest) {
+      return {
+        status: "Valutazione su richiesta", tone: "high", cashValue: 0, cash: "Su richiesta", bonusValue: 0, bonus: "Su richiesta",
+        diagnosis: false, resultType: "on_request", cashLabel: "Vendita", bonusLabel: "Permuta",
+        note: "Per gli iPhone 17 e 18 non abbiamo un prezzo fisso: li prendiamo quando capita l'occasione giusta. Scrivici modello, memoria e com'è messo su WhatsApp e ti facciamo un'offerta a parte.",
+        reasons: []
+      };
+    }
+
     const retail = currentRetail(item, state.storage);
     const tests = state.tests || {};
     const problemIds = Object.keys(tests).filter((key) => tests[key] === "problem");
@@ -168,14 +179,14 @@
         status: "Account da rimuovere", tone: "blocked", cashValue: 0, cash: "Non acquistabile",
         bonusValue: 0, bonus: "Non disponibile", diagnosis: true, resultType: "account_blocked",
         cashLabel: "Acquisto diretto", bonusLabel: "Permuta",
-        note: "Non possiamo acquistare dispositivi ancora legati a iCloud, Trova il mio iPhone, account Google o Samsung. Recupera la password e rimuovi l’account prima della verifica.",
+        note: "Non possiamo acquistare iPhone ancora legati a iCloud o a Trova il mio iPhone. Recupera la password e rimuovi l’account prima della verifica.",
         reasons: ["Proprietà e account devono essere verificabili", "L’IMEI deve risultare regolare"]
       };
     }
 
     const powerProblem = tests.power === "problem";
     const otherProblems = problemIds.filter((id) => id !== "power");
-    const swollenBattery = state.battery === "samsung_swollen";
+    const swollenBattery = false;
     const labReserves = reserveProfile(retail, item.demand);
     const labRiskReserve = labReserves.preparation + labReserves.warranty + labReserves.depreciation + labReserves.marginTaxReserve;
     const otherRepairCost = otherProblems.reduce((total, problemId) => total + repairCost(problemId, retail) + 20, 0);
@@ -205,11 +216,11 @@
       };
     }
 
-    let offer = healthyPurchaseValue(retail, item.demand);
+    let offer = healthyPurchaseValue(retail);
 
-    if (state.condition === "excellent") offer += Math.min(15, retail * 0.015);
-    if (state.condition === "marked") offer -= Math.max(20, retail * 0.07);
-    if (state.condition === "worn") offer -= Math.max(50, retail * 0.18);
+    if (state.condition === "excellent") offer += Math.min(20, retail * 0.02);
+    if (state.condition === "marked") offer -= Math.max(25, retail * 0.07);
+    if (state.condition === "worn") offer -= Math.max(60, retail * 0.18);
 
     if (state.displayHistory === "official") offer -= 10;
     if (state.displayHistory === "unknown") offer -= 20;
@@ -218,13 +229,10 @@
       reasons.push("Display compatibile: maggior rischio di preparazione e garanzia");
     }
 
-    if (state.battery === "iphone_high") offer += 10;
+    // Sotto l'80% la batteria va cambiata prima di rivendere: si toglie il costo del cambio.
     if (state.battery === "iphone_low") offer -= 25;
-    if (state.battery === "iphone_bad") offer -= Math.max(45, retail * 0.06);
-    if (state.battery === "iphone_unknown") offer -= 15;
-    if (state.battery === "samsung_weak") offer -= 35;
-    if (state.battery === "samsung_unknown") offer -= 15;
-    if (swollenBattery) offer = config.minimumRecoveryOffer;
+    if (state.battery === "iphone_bad") offer -= Math.max(50, retail * 0.07);
+    if (state.battery === "iphone_unknown") offer -= 20;
 
     let technicalDeduction = 0;
     otherProblems.forEach((problemId) => {
@@ -244,7 +252,7 @@
     if (problemIds.length) reasons.push(`Problemi tecnici dichiarati: ${problemIds.length}`);
     if (unknownIds.length) reasons.push(`Funzioni da verificare in negozio: ${unknownIds.length}`);
     if (state.condition === "worn") reasons.push("Danni estetici importanti considerati nel valore");
-    if (["iphone_bad", "samsung_weak", "samsung_swollen"].includes(state.battery)) reasons.push("Batteria considerata nei costi di preparazione");
+    if (state.battery === "iphone_bad") reasons.push("Batteria considerata nei costi di preparazione");
 
     let status;
     let tone;
@@ -253,7 +261,7 @@
       status = "Ritiro recupero"; tone = "recovery"; resultType = "recovery_floor";
     } else if (problemIds.length || unknownIds.length || state.condition === "worn" || state.displayHistory === "compatible") {
       status = "Valutazione con difetti"; tone = "lab"; resultType = "technical_offer";
-    } else if (item.demand === "high" && state.condition !== "marked" && !["iphone_bad", "samsung_weak"].includes(state.battery)) {
+    } else if (item.demand === "high" && state.condition !== "marked" && state.battery !== "iphone_bad") {
       status = "Interesse alto"; tone = "high"; resultType = "high_interest";
     } else if (item.demand === "low") {
       status = "Acquisto selettivo"; tone = "low"; resultType = "selective_low";
@@ -294,11 +302,21 @@
       const lower = computeEstimate(Object.assign({}, input, { storage: gb }));
       if (MONOTONIC_TYPES.includes(lower.resultType) && lower.cashValue > best) best = lower.cashValue;
     });
-    if (best === result.cashValue) return result;
-    return Object.assign({}, result, { cashValue: best, cash: `circa ${best}€` });
+    return splitOffer(result, best);
   }
 
-  const api = Object.freeze({ priceData, config, estimate, formatStorage, currentRetail });
+  // Regola di Jack (19/10): in permuta 20 € sotto il valore calcolato; chi vende soltanto
+  // prende ancora meno (10% in meno, almeno 30 €). bonusValue = differenza tra permuta e vendita.
+  function splitOffer(result, base) {
+    const trade = Math.max(config.minimumRecoveryOffer, euro(base - config.tradeInDiscount));
+    const cash = Math.max(config.minimumRecoveryOffer, euro(trade - Math.max(config.cashOnlyMinGap, trade * config.cashOnlyRate)));
+    return Object.assign({}, result, {
+      cashValue: cash, cash: `circa ${cash}€`, tradeValue: trade,
+      bonusValue: trade - cash, bonus: `+${trade - cash}€`
+    });
+  }
+
+  const api = Object.freeze({ priceData, config, estimate, formatStorage, currentRetail, resaleMargin });
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   global.ALBA_USED_ENGINE = api;
 })(typeof window !== "undefined" ? window : globalThis);

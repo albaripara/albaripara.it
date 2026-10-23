@@ -154,7 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const pricingLab = document.querySelector(".pricing-lab");
   let selectedModel = "";
   let selectedProblem = "";
-  let activeFamily = "Tutti";
+  let activeFamily = "";
 
   function wa(text) {
     return `https://wa.me/3905831797237?text=${encodeURIComponent(text)}`;
@@ -221,15 +221,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderFamilyFilters() {
     if (!modelQuick) return;
-    const families = ["Tutti", "17", "16", "15", "14", "13", "12", "11", "SE / X / 8"];
+    const families = ["17", "16", "15", "14", "13", "12", "11", "SE / X / 8"];
     modelQuick.innerHTML = families.map((family) => {
-      const label = family === "Tutti" ? "Tutti" : family === "SE / X / 8" ? "SE / X / 8" : `Serie ${family}`;
+      const label = family === "SE / X / 8" ? "SE / X / 8" : `Serie ${family}`;
       return `<button type="button" class="${family === activeFamily ? "is-active" : ""}" data-family="${escapeHTML(family)}">${escapeHTML(label)}</button>`;
     }).join("");
 
     modelQuick.querySelectorAll("button").forEach((button) => {
       button.addEventListener("click", () => {
-        activeFamily = button.dataset.family || "Tutti";
+        activeFamily = button.dataset.family === activeFamily ? "" : (button.dataset.family || "");
         renderFamilyFilters();
         renderModelCards();
       });
@@ -242,8 +242,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // i più recenti per primi (sono i più cercati), «Altro iPhone» sempre in fondo
     const allModels = (models.iphone || []).filter((m) => !/^Altro/i.test(m)).reverse()
       .concat((models.iphone || []).filter((m) => /^Altro/i.test(m)));
+    // finché non tocchi una serie o non scrivi, niente lista lunga da scorrere
+    if (!activeFamily && !query && !selectedModel) {
+      modelCards.innerHTML = `<div class="model-empty">Tocca la serie del tuo iPhone qui sopra, oppure scrivi il modello.</div>`;
+      return;
+    }
     const filteredModels = allModels.filter((deviceModel) => {
-      const familyMatch = activeFamily === "Tutti" || familyFor(deviceModel) === activeFamily;
+      const familyMatch = !activeFamily || query || familyFor(deviceModel) === activeFamily;
       const queryMatch = !query || deviceModel.toLowerCase().includes(query);
       return familyMatch && queryMatch;
     });
@@ -274,13 +279,14 @@ document.addEventListener("DOMContentLoaded", () => {
       window.albaTrack("preventivo_model_selected", { device_model: deviceModel });
     }
     if (model) model.value = deviceModel;
+    if (!activeFamily && deviceModel) { activeFamily = familyFor(deviceModel); renderFamilyFilters(); }
     renderModelCards();
     document.querySelectorAll("#problems button").forEach((button) => button.classList.remove("selected"));
     if (problemPanel) problemPanel.classList.remove("is-locked");
     if (problems) problems.classList.remove("hidden");
     if (problemHelper) problemHelper.textContent = `${deviceModel} selezionato. Ora scegli il problema.`;
     setFlowStep(2);
-    setResult("Scegli il problema", `${deviceModel} selezionato. Ora scegli l'intervento per vedere solo le soluzioni disponibili.`, backButtons());
+    setResult("Scegli il problema", `${deviceModel} selezionato. Ora scegli il problema.`, backButtons());
     // problema già scelto dalla hero: lo applichiamo subito (un solo scorrimento, niente timer in gara)
     const pending = window.albaPendingProblem;
     window.albaPendingProblem = null;
@@ -471,13 +477,13 @@ document.addEventListener("DOMContentLoaded", () => {
     window.albaPendingProblem = null;
     if (model) model.value = "";
     if (modelSearch) modelSearch.value = "";
-    activeFamily = "Tutti";
+    activeFamily = "";
     renderFamilyFilters();
     renderModelCards();
     document.querySelectorAll("#problems button").forEach((button) => button.classList.remove("selected"));
     if (problems) problems.classList.add("hidden");
     if (problemPanel) problemPanel.classList.add("is-locked");
-    if (problemHelper) problemHelper.textContent = "Scegli prima il modello. Poi compariranno solo gli interventi selezionabili.";
+    if (problemHelper) problemHelper.textContent = "Prima scegli il modello, poi qui compaiono le riparazioni che si possono fare.";
     setFlowStep(1);
     setResult("Seleziona il modello", "Prima scegli il tuo iPhone. Poi ti mostriamo i problemi disponibili.");
     const modelPanel = document.querySelector(".lab-panel--models");

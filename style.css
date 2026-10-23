@@ -2273,3 +2273,12 @@ body.v28-final .trade-v34-process-card li::before{
     margin:0 auto 22px!important;
   }
 }
+
+/* banner cookie: piccolo, in fondo, non copre la pagina */
+@media (max-width:760px){
+  .cookie-banner{padding:14px 14px 12px!important;gap:10px!important;border-radius:20px!important;bottom:10px!important}
+  .cookie-banner__eyebrow{display:none!important}
+  .cookie-banner p{font-size:13.5px!important;line-height:1.4!important}
+  .cookie-banner__actions{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important}
+  .cookie-banner .cookie-btn{min-height:42px!important;padding:8px 4px!important;font-size:13.5px!important}
+}

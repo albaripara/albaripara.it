@@ -1,0 +1,496 @@
+/* Valutazione usato: telefono 3D + tre passaggi. Pagina valutazione-usato.html */
+.vu-section{padding:8px 0 56px}
+.vu-app{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);gap:28px;align-items:start}
+
+/* ---------- palco scuro con il telefono ---------- */
+.vu-stage{position:sticky;top:96px;overflow:hidden;border-radius:32px;min-height:600px;display:flex;flex-direction:column;
+  background:radial-gradient(120% 80% at 50% 18%,#1d3b28 0%,#0c1a12 55%,#07100b 100%);
+  box-shadow:0 40px 90px rgba(7,16,11,.28),inset 0 0 0 1px rgba(255,255,255,.07)}
+.vu-stage-glow{position:absolute;left:50%;top:44%;width:420px;height:420px;margin:-210px 0 0 -210px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(183,255,90,.22),rgba(183,255,90,0) 65%);filter:blur(10px)}
+.vu-scene{position:relative;flex:1;display:grid;place-items:center;perspective:1100px;cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none;padding:40px 0 10px}
+.vu-scene:active{cursor:grabbing}
+.vu-floor{position:absolute;left:50%;bottom:78px;width:200px;height:26px;margin-left:-100px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(0,0,0,.55),rgba(0,0,0,0));filter:blur(6px)}
+.vu-stage-bar{position:relative;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:0 20px 18px}
+.vu-hint{font-size:13px;color:rgba(243,248,241,.6);transition:opacity .4s}
+.vu-hint.gone{opacity:0}
+.vu-flip{appearance:none;font:inherit;font-size:13.5px;font-weight:750;color:#fff;padding:10px 16px;border-radius:999px;cursor:pointer;
+  background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.06));border:1px solid rgba(255,255,255,.26);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
+.vu-flip:hover{background:rgba(255,255,255,.22)}
+
+/* ---------- il telefono ---------- */
+.vu-phone{--w:214px;--h:440px;--r:38px;--frame:#cfd4d1;--frame2:#9ea6a1;--back:#dfe8e1;
+  position:relative;width:var(--w);height:var(--h);transform-style:preserve-3d;will-change:transform}
+.vu-phone[data-finish="pro"]{--frame:#7d817f;--frame2:#4b4f4d;--back:#3a3f3c}
+.vu-phone[data-look="pro-plateau"]{--frame:#a9b3c4;--frame2:#6c7687;--back:#2f3b52}
+.vu-phone[data-look="air"]{--frame:#e6dcc8;--frame2:#b8ab92;--back:#efe9dd}
+.vu-phone[data-look="se"]{--r:30px;--back:#f1f2f0;--frame:#dfe1e0;--frame2:#a8acaa}
+.vu-phone[data-look="dual-square"]{--back:#ddd6ea;--frame:#cfc8de;--frame2:#9a92ad}
+.vu-phone[data-look="dual-diagonal"]{--back:#c9d7e6;--frame:#b9c8d8;--frame2:#7f8fa1}
+.vu-phone[data-look="dual-diagonal-island"]{--back:#d3e3d3;--frame:#c4d6c4;--frame2:#8aa08a}
+.vu-phone[data-look="dual-vertical"]{--back:#9ccbc7;--frame:#a2c8c4;--frame2:#5f8c88}
+.vu-phone[data-look="single-notch"]{--back:#f3f3f1;--frame:#e2e3e1;--frame2:#a9acaa}
+.vu-phone{--d:16px}
+.vu-edge{position:absolute;inset:0;border-radius:var(--r);background:var(--frame);filter:brightness(var(--l,1));transform:translateZ(calc(var(--d) * var(--k,0)))}
+/* lati dritti pieni, con riga lucida al centro come l'acciaio/alluminio vero */
+.vu-side,.vu-btn{position:absolute;width:var(--d);margin-left:calc(var(--d) / -2)}
+.vu-side{top:var(--r);bottom:var(--r);background:linear-gradient(90deg,var(--frame2) 0%,var(--frame) 22%,#fff 50%,var(--frame) 78%,var(--frame2) 100%)}
+.vu-phone[data-finish="pro"] .vu-side{background:linear-gradient(90deg,var(--frame2) 0%,var(--frame) 30%,color-mix(in srgb,var(--frame) 60%,#fff) 50%,var(--frame) 70%,var(--frame2) 100%)}
+.vu-side-l,.vu-btn-l{left:0;transform:rotateY(-90deg)}
+.vu-side-r,.vu-btn-r{left:100%;transform:rotateY(90deg)}
+.vu-btn{width:calc(var(--d) - 6px);margin-left:calc((var(--d) - 6px) / -2);border-radius:3px;
+  background:linear-gradient(90deg,var(--frame2),var(--frame) 50%,var(--frame2));background:linear-gradient(90deg,var(--frame2),color-mix(in srgb,var(--frame) 70%,#fff) 50%,var(--frame2));box-shadow:0 0 0 1px rgba(0,0,0,.25)}
+.vu-btn-l{transform:rotateY(-90deg) translateZ(1.6px)}
+.vu-btn-r{transform:rotateY(90deg) translateZ(1.6px)}
+.vu-btn-mute{width:6px;margin-left:-3px;background:#e5484d;box-shadow:0 0 0 2px var(--frame2)}
+.vu-btn-cam{background:linear-gradient(90deg,#0d0f0e,#3b403d 50%,#0d0f0e);border-radius:2px}
+/* bordo di sotto: altoparlante, porta di ricarica, microfono */
+.vu-bottom{position:absolute;left:var(--r);right:var(--r);top:100%;height:var(--d);margin-top:calc(var(--d) / -2);transform:rotateX(-90deg);
+  display:flex;align-items:center;justify-content:center;gap:12%;background:linear-gradient(180deg,var(--frame2),#fff 50%,var(--frame2))}
+.vu-phone[data-finish="pro"] .vu-bottom{background:linear-gradient(180deg,var(--frame2),var(--frame) 50%,var(--frame2))}
+.vu-port{width:22%;height:42%;border-radius:999px;background:#0b0c0c;box-shadow:inset 0 1px 2px #000}
+.vu-port:not(.usbc){width:14%}
+.vu-grill{width:18%;height:22%;background:radial-gradient(circle,#111 45%,transparent 50%) 0 0/5px 100% repeat-x}
+.vu-face{position:absolute;inset:0;border-radius:var(--r);-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.vu-frontface{transform:translateZ(calc(var(--d) / 2));background:#050706;box-shadow:inset 0 0 0 2px var(--frame),inset 0 0 0 3px rgba(0,0,0,.6)}
+.vu-backface{transform:rotateY(180deg) translateZ(calc(var(--d) / 2));background:linear-gradient(160deg,rgba(255,255,255,.18),rgba(255,255,255,0) 40%),var(--back);
+  box-shadow:inset 0 0 0 2px var(--frame)}
+
+/* schermo */
+.vu-screen{position:absolute;inset:8px;border-radius:calc(var(--r) - 7px);overflow:hidden;
+  background:radial-gradient(90% 60% at 30% 20%,#b7ff5a 0%,rgba(183,255,90,0) 60%),radial-gradient(90% 70% at 80% 90%,#25a84e 0%,rgba(37,168,78,0) 65%),linear-gradient(180deg,#0f7d3b,#07100b);
+  transition:filter .4s}
+.vu-screen::after{content:"";position:absolute;inset:0;background:linear-gradient(125deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,0) 38%);pointer-events:none}
+.vu-phone[data-front="home"] .vu-screen{inset:15% 9px 15% 9px;border-radius:4px}
+.vu-island{position:absolute;left:50%;top:2.2%;width:31%;height:5%;margin-left:-15.5%;border-radius:999px;background:#000;z-index:2}
+.vu-phone[data-front="notch"] .vu-island{top:0;width:46%;margin-left:-23%;height:5.6%;border-radius:0 0 14px 14px}
+.vu-phone[data-front="home"] .vu-island{display:none}
+.vu-home{display:none}
+.vu-phone[data-front="home"] .vu-home{display:block;position:absolute;left:50%;bottom:3.6%;width:44px;height:44px;margin-left:-22px;border-radius:50%;
+  box-shadow:inset 0 0 0 2px #3d4340;background:#0b0d0c}
+.vu-ui{position:absolute;inset:0;color:#fff;text-align:center;transition:opacity .3s;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif}
+.vu-sb{position:absolute;top:11px;left:9%;right:9%;display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:650}
+.vu-phone[data-front="home"] .vu-sb{top:4px;left:4%;right:4%;font-size:9px}
+.vu-time{letter-spacing:-.01em}
+.vu-sb-icons{display:flex;align-items:center;gap:3px}
+.vu-sig{display:flex;align-items:flex-end;gap:1px;height:8px}
+.vu-sig b{width:2px;background:#fff;border-radius:1px}
+.vu-sig b:nth-child(1){height:3px}.vu-sig b:nth-child(2){height:4.5px}.vu-sig b:nth-child(3){height:6px}.vu-sig b:nth-child(4){height:8px}
+.vu-wifi{width:11px;height:8px;fill:#fff}
+.vu-bat{position:relative;width:17px;height:8px;border-radius:2.5px;border:1px solid rgba(255,255,255,.55);padding:1px}
+.vu-bat b{display:block;height:100%;width:78%;background:#fff;border-radius:1px}
+.vu-bat::after{content:"";position:absolute;right:-3px;top:2px;width:1.5px;height:3px;border-radius:0 1px 1px 0;background:rgba(255,255,255,.55)}
+.vu-lock-date{position:absolute;top:13%;left:0;right:0;font-size:12px;font-weight:600;opacity:.85}
+.vu-lock-clock{position:absolute;top:16%;left:0;right:0;font-size:58px;line-height:1;font-weight:700;letter-spacing:-.02em;text-shadow:0 2px 20px rgba(0,0,0,.15)}
+.vu-phone[data-front="home"] .vu-lock-date{top:9%;font-size:10px}
+.vu-phone[data-front="home"] .vu-lock-clock{top:14%;font-size:44px}
+.vu-ui-model{position:absolute;left:0;right:0;top:56%;font-size:22px;line-height:1;letter-spacing:-.03em;font-weight:800;text-shadow:0 2px 18px rgba(0,0,0,.35)}
+.vu-ui-status{position:absolute;left:50%;top:64%;transform:translateX(-50%);white-space:nowrap;font-size:11.5px;font-weight:700;padding:6px 12px;border-radius:999px;
+  background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.vu-ui-status:empty{display:none}
+.vu-lock-btn{position:absolute;bottom:7%;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.28);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.vu-lock-btn.l{left:12%}.vu-lock-btn.r{right:12%}
+.vu-homebar{position:absolute;left:50%;bottom:2.2%;width:36%;height:4px;margin-left:-18%;border-radius:999px;background:#fff;opacity:.9}
+.vu-phone[data-front="home"] .vu-lock-btn,.vu-phone[data-front="home"] .vu-homebar{display:none}
+.vu-crack{position:absolute;inset:0;width:100%;height:100%;fill:none;stroke:rgba(255,255,255,.85);stroke-width:.5;vector-effect:non-scaling-stroke}
+.vu-crack path{stroke-width:1.4px}
+.vu-screen-crack,.vu-glass-crack{position:absolute;inset:0;opacity:0;transition:opacity .25s;pointer-events:none}
+.vu-glass-crack{border-radius:inherit;overflow:hidden}
+.vu-glass-crack .vu-crack{stroke:rgba(255,255,255,.9)}
+.vu-phone.has-screen .vu-screen-crack,.vu-phone.has-backglass .vu-glass-crack{opacity:1}
+.vu-phone.is-off .vu-screen{filter:brightness(0)}
+.vu-phone.is-off .vu-ui{opacity:0}
+.vu-phone.is-off .vu-hot:not([data-fault="power"]){opacity:.25}
+
+/* retro: fotocamere e mela */
+.vu-apple{position:absolute;left:50%;top:42%;width:21%;margin:-12% 0 0 -10.5%;filter:drop-shadow(0 1px 0 rgba(255,255,255,.25)) drop-shadow(0 -1px 0 rgba(0,0,0,.12))}
+.vu-phone[data-finish="color"] .vu-apple path,.vu-phone[data-look="air"] .vu-apple path{fill:rgba(0,0,0,.09)}
+.vu-phone[data-look="se"] .vu-apple{top:44%}
+/* luce che scorre sul vetro mentre giri il telefono */
+.vu-glare,.vu-sheen{position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:4;
+  background:linear-gradient(115deg,rgba(255,255,255,0) 35%,rgba(255,255,255,.16) 47%,rgba(255,255,255,.04) 53%,rgba(255,255,255,0) 62%);
+  background-size:260% 260%;background-position:var(--gx,50%) var(--gy,50%)}
+.vu-sheen{background:linear-gradient(115deg,rgba(255,255,255,0) 30%,rgba(255,255,255,.28) 46%,rgba(255,255,255,.06) 54%,rgba(255,255,255,0) 66%),
+  radial-gradient(120% 80% at 20% 0%,rgba(255,255,255,.18),rgba(255,255,255,0) 50%);background-size:260% 260%,100% 100%;background-position:calc(100% - var(--gx,50%)) var(--gy,50%),0 0}
+.vu-phone[data-finish="pro"] .vu-sheen{opacity:.55}
+.vu-cams{position:absolute;left:6%;top:3%;width:46%;aspect-ratio:1;border-radius:24%;z-index:1;
+  background:linear-gradient(145deg,rgba(255,255,255,.34),rgba(255,255,255,.06) 45%,rgba(0,0,0,.16));box-shadow:0 3px 8px rgba(0,0,0,.35),inset 0 0 0 1px rgba(255,255,255,.3),inset 0 -2px 3px rgba(0,0,0,.15)}
+.vu-cams .l{position:absolute;width:40%;aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle at 50% 50%,#0a0d14 0 14%,#26304a 15% 20%,#05070a 21% 46%,#1c1f22 47% 52%,#5e6366 53% 56%,#16181a 57% 72%,var(--frame) 73%);background:radial-gradient(circle at 50% 50%,#0a0d14 0 14%,#26304a 15% 20%,#05070a 21% 46%,#1c1f22 47% 52%,#5e6366 53% 56%,#16181a 57% 66%,color-mix(in srgb,var(--frame) 80%,#000) 67% 72%,var(--frame) 73%);
+  box-shadow:0 2px 5px rgba(0,0,0,.55),inset 0 0 0 1px rgba(255,255,255,.15)}
+.vu-cams .l::before{content:"";position:absolute;inset:24%;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(140,120,255,.55),rgba(60,140,255,.15) 40%,transparent 62%)}
+.vu-cams .l::after{content:"";position:absolute;left:34%;top:30%;width:9%;height:9%;border-radius:50%;background:#fff;opacity:.85;box-shadow:0 0 4px #fff}
+.vu-cams .fl{position:absolute;width:11%;aspect-ratio:1;border-radius:50%;background:radial-gradient(#fff6d6,#c9b98a);right:10%;top:10%}
+.vu-cams .li{position:absolute;width:12%;aspect-ratio:1;border-radius:50%;background:#111;right:10%;bottom:10%}
+.vu-cams .l:nth-of-type(1){left:6%;top:6%}
+.vu-cams .l:nth-of-type(2){left:6%;bottom:6%}
+.vu-cams .l:nth-of-type(3){right:6%;top:30%}
+.vu-phone[data-look^="dual-diagonal"] .vu-cams .l:nth-of-type(2){left:auto;right:6%;bottom:6%}
+.vu-phone[data-look^="dual-diagonal"] .vu-cams .fl{right:12%;top:12%}
+.vu-phone[data-look="dual-vertical"] .vu-cams{width:22%;aspect-ratio:.48;border-radius:999px;left:7%}
+.vu-phone[data-look="dual-vertical"] .vu-cams .l{width:80%;left:10%}
+.vu-phone[data-look="dual-vertical"] .vu-cams .l:nth-of-type(1){top:4%}
+.vu-phone[data-look="dual-vertical"] .vu-cams .l:nth-of-type(2){bottom:4%}
+.vu-phone[data-look="dual-vertical"] .vu-cams .fl{right:auto;left:135%;top:40%;width:30%}
+.vu-phone[data-look="se"] .vu-cams,.vu-phone[data-look^="single"] .vu-cams{width:17%;border-radius:50%;left:7%;top:3%}
+.vu-phone[data-look="se"] .vu-cams .l,.vu-phone[data-look^="single"] .vu-cams .l{width:84%;left:8%;top:8%}
+.vu-phone[data-look="se"] .vu-cams .fl,.vu-phone[data-look^="single"] .vu-cams .fl{right:auto;left:125%;top:30%;width:34%}
+.vu-phone[data-look="air"] .vu-cams{left:4%;right:4%;width:auto;aspect-ratio:auto;height:11%;top:3.5%;border-radius:999px}
+.vu-phone[data-look="air"] .vu-cams .l{height:76%;width:auto;left:5%;top:12%}
+.vu-phone[data-look="air"] .vu-cams .fl{right:auto;left:28%;top:40%;width:auto;height:20%}
+.vu-phone[data-look="pro-plateau"] .vu-cams{left:0;right:0;width:auto;aspect-ratio:auto;height:27%;top:0;border-radius:var(--r) var(--r) 18px 18px;
+  background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(0,0,0,.12))}
+.vu-phone[data-look="pro-plateau"] .vu-cams .l{width:auto;height:36%}
+.vu-phone[data-look="pro-plateau"] .vu-cams .l:nth-of-type(1){left:7%;top:10%}
+.vu-phone[data-look="pro-plateau"] .vu-cams .l:nth-of-type(2){left:7%;top:auto;bottom:10%}
+.vu-phone[data-look="pro-plateau"] .vu-cams .l:nth-of-type(3){right:auto;left:33%;top:32%}
+.vu-phone[data-look="pro-plateau"] .vu-cams .fl{right:12%;top:22%;width:auto;height:12%}
+.vu-phone[data-look="pro-plateau"] .vu-cams .li{right:12%;bottom:22%;width:auto;height:12%}
+
+/* punti da toccare */
+.vu-hot{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;padding:0;border-radius:50%;cursor:pointer;z-index:5;
+  appearance:none;border:2px solid #fff;background:rgba(183,255,90,.92);box-shadow:0 0 0 0 rgba(183,255,90,.55),0 4px 12px rgba(0,0,0,.35);
+  animation:vuPulse 2.2s ease-out infinite;transition:background .2s,transform .2s}
+.vu-hot::before{content:"";position:absolute;inset:8px;border-radius:50%;background:#07100b;opacity:.75}
+.vu-hot span{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(4px);white-space:nowrap;pointer-events:none;
+  font-size:12px;font-weight:750;color:#07100b;background:#fff;padding:5px 9px;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.25);opacity:0;transition:.2s}
+.vu-hot:hover span,.vu-hot.on span{opacity:1;transform:translateX(-50%)}
+.vu-hot.on{background:#e5484d;animation:none;transform:scale(1.08)}
+.vu-hot.on::before{content:"✕";inset:0;background:none;opacity:1;color:#fff;font-size:13px;font-weight:900;line-height:26px;text-align:center}
+.vu-hot.on span{background:#e5484d;color:#fff}
+.vu-hot[data-fault="cameras"] span{left:-4px;transform:translateY(4px)}
+.vu-hot[data-fault="cameras"].on span,.vu-hot[data-fault="cameras"]:hover span{transform:none}
+.vu-hot[data-fault="buttons"] span{left:auto;right:50%;transform:none}
+.vu-app:not([data-step="faults"]) .vu-hot{opacity:0;pointer-events:none}
+@keyframes vuPulse{0%{box-shadow:0 0 0 0 rgba(183,255,90,.55),0 4px 12px rgba(0,0,0,.35)}70%{box-shadow:0 0 0 14px rgba(183,255,90,0),0 4px 12px rgba(0,0,0,.35)}100%{box-shadow:0 0 0 0 rgba(183,255,90,0),0 4px 12px rgba(0,0,0,.35)}}
+
+/* ---------- pannello passaggi ---------- */
+.vu-panel{position:relative;background:#fff;border:1px solid #dfe6df;border-radius:32px;padding:30px;box-shadow:0 24px 70px rgba(11,23,17,.09);min-height:600px}
+.vu-progress{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:22px}
+.vu-progress i{height:5px;border-radius:999px;background:#e6ece6;transition:background .3s}
+.vu-progress i.on{background:linear-gradient(90deg,#0f7d3b,#25a84e)}
+.vu-app[data-step="result"] .vu-progress i{background:#b7ff5a}
+.vu-step{display:none}
+.vu-step.active{display:block;animation:vuIn .35s cubic-bezier(.22,1,.36,1)}
+@keyframes vuIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.vu-kicker{margin:0 0 4px!important;font-size:13px!important;font-weight:800!important;letter-spacing:.1em;text-transform:uppercase;color:#0f7d3b!important}
+.vu-step h2{margin:0 0 14px!important;font-size:clamp(28px,3.2vw,38px)!important;line-height:1.02!important;letter-spacing:-.04em!important;text-align:left!important}
+.vu-step h3{margin:0 0 4px!important;font-size:17px!important;letter-spacing:-.01em;text-align:left!important}
+.vu-lead{margin:-4px 0 16px!important;color:#5f6b62;font-size:15.5px;line-height:1.45;text-align:left!important}
+.vu-help{margin:0 0 10px!important;color:#5f6b62;font-size:13.5px!important;line-height:1.4;text-align:left!important}
+.vu-back{appearance:none;background:none;border:0;padding:0;margin:0 0 12px;font:inherit;font-size:14px;font-weight:700;color:#5f6b62;cursor:pointer}
+.vu-back:hover{color:#0b1711}
+.vu-link{appearance:none;background:none;border:0;padding:6px 0;margin-top:14px;font:inherit;font-size:14.5px;font-weight:700;color:#0f7d3b;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+
+.vu-search{display:block;margin-bottom:12px}
+.vu-search input{width:100%;padding:14px 18px;border-radius:999px;border:1px solid #dfe6df;background:#f6f7f3;font-size:16px;outline:none}
+.vu-search input:focus{border-color:#0f7d3b;background:#fff;box-shadow:0 0 0 4px rgba(15,125,59,.12)}
+.vu-models{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px;max-height:330px;overflow:auto;padding:2px;margin:0 -2px;overscroll-behavior:contain}
+.vu-models button,.vu-chips button,.vu-faults button{appearance:none;font:inherit;cursor:pointer;text-align:left;border:1px solid #dfe6df;background:#fff;color:#0b1711;
+  border-radius:16px;transition:transform .15s,border-color .15s,background .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent}
+.vu-models button{padding:12px 10px;font-size:15px;font-weight:750;text-align:center;border-radius:14px}
+.vu-models button:hover,.vu-chips button:hover,.vu-faults button:hover{border-color:#0f7d3b}
+.vu-models button:active,.vu-chips button:active,.vu-faults button:active{transform:scale(.97)}
+.vu-models button.selected,.vu-chips button.selected{background:#07100b;color:#fff;border-color:#07100b;box-shadow:0 10px 24px rgba(7,16,11,.2)}
+.vu-models button.selected{background:linear-gradient(135deg,#0f7d3b,#25a84e);border-color:#0f7d3b}
+.vu-models button small{display:block;font-size:10.5px;font-weight:650;color:#5f6b62;margin-top:2px}
+.vu-models button.selected small{color:rgba(255,255,255,.75)}
+.vu-empty{grid-column:1/-1;color:#5f6b62;font-size:14px;margin:6px 0}
+.vu-storage{margin-top:20px;padding-top:18px;border-top:1px solid #edf1ed;animation:vuIn .35s}
+.vu-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+.vu-chips button{padding:11px 16px;border-radius:999px;display:flex;flex-direction:column;gap:2px}
+.vu-chips button b{font-size:15px}
+.vu-chips button span{font-size:12px;color:#5f6b62}
+.vu-chips button.selected span{color:rgba(255,255,255,.7)}
+.vu-chips--wide{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.vu-chips--wide button{border-radius:16px}
+.vu-group{padding:16px 0;border-bottom:1px solid #edf1ed}
+.vu-group:first-of-type{padding-top:4px}
+
+.vu-faults{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:18px}
+.vu-faults button{position:relative;padding:12px 38px 12px 14px;display:flex;flex-direction:column;gap:2px;min-height:58px;justify-content:center}
+.vu-faults button b{font-size:14.5px;line-height:1.2}
+.vu-faults button span{font-size:12px;color:#5f6b62;line-height:1.25}
+.vu-faults button::after{content:"";position:absolute;right:12px;top:50%;width:18px;height:18px;margin-top:-9px;border-radius:50%;border:2px solid #cfd8cf}
+.vu-faults button[aria-pressed="true"]{border-color:#e5484d;background:#fff4f4}
+.vu-faults button[aria-pressed="true"]::after{content:"✕";border-color:#e5484d;background:#e5484d;color:#fff;font-size:10px;font-weight:900;line-height:14px;text-align:center}
+.vu-faults button[data-fault="power"]{grid-column:1/-1}
+.vu-faults button:disabled{opacity:.35;cursor:not-allowed}
+.vu-cta{width:100%;min-height:56px!important;font-size:16.5px!important;margin-top:18px}
+/* la spunta sta nel testo: il ::before dei .btn è il riflesso che scorre (ux-v45.css) */
+.vu-cta:disabled{opacity:.4;box-shadow:none!important;cursor:not-allowed}
+
+/* risultato */
+.vu-result h2{margin-top:12px!important}
+.vu-offers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:6px 0 16px}
+.vu-offers article{padding:18px;border-radius:22px;background:#f3f8f1;border:1px solid #dfe6df;display:flex;flex-direction:column;gap:4px}
+.vu-offers span{font-size:13px;font-weight:750;color:#5f6b62}
+.vu-offers strong{font-size:clamp(34px,4vw,48px);line-height:1;letter-spacing:-.04em;color:#0b1711;font-variant-numeric:tabular-nums}
+.vu-offers small{font-size:12.5px;color:#5f6b62}
+.vu-offers .featured{background:linear-gradient(160deg,#12301f,#07100b);border-color:#07100b}
+.vu-offers .featured span,.vu-offers .featured small{color:rgba(243,248,241,.72)}
+.vu-offers .featured strong{color:#b7ff5a}
+.vu-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.vu-pills span{font-size:12.5px;font-weight:700;padding:6px 10px;border-radius:999px;background:#edf4ec;color:#16301f}
+.vu-pills .problem{background:#fff0f0;color:#b4232a}
+.vu-pills .ok{background:#e6f8dc;color:#0f7a37}
+.vu-note{margin:0 0 10px!important;font-size:14.5px;line-height:1.5;color:#33413a;text-align:left!important}
+.vu-icloud{margin:0 0 16px!important;font-size:14px;line-height:1.45;padding:12px 14px;border-radius:14px;background:#fff8e6;border:1px solid #f1e0b0;color:#4a3b12;text-align:left!important}
+.vu-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.vu-actions .btn{min-width:0!important}
+.vu-app[data-result="on_request"] .vu-offers,.vu-app[data-result="on_request"] #vuTradeIn{display:none!important}
+.vu-app[data-result="on_request"] .vu-actions{grid-template-columns:minmax(0,1fr)}
+.vu-result .trade-v34-fineprint{margin-top:14px}
+
+/* ---------- telefono e tablet ---------- */
+@media (max-width:860px){
+  .vu-section{padding:0 0 40px}
+  .vu-app{grid-template-columns:minmax(0,1fr);gap:14px}
+  .vu-stage{position:relative;top:0;min-height:0;border-radius:26px}
+  .vu-scene{height:380px;padding:24px 0 0}
+  .vu-phone{--w:160px;--h:330px;--r:30px}
+  .vu-phone[data-front="home"] .vu-home{width:34px;height:34px;margin-left:-17px}
+  .vu-ui-model{font-size:17px}
+  .vu-lock-clock{font-size:44px}
+  .vu-lock-btn{width:24px;height:24px}
+  .vu-phone{--d:13px}
+  .vu-floor{bottom:62px}
+  .vu-app[data-step="model"] .vu-scene{height:250px;padding-top:14px}
+  .vu-app[data-step="model"] .vu-phone{--w:110px;--h:226px;--r:22px}
+  .vu-app[data-step="model"] .vu-floor{bottom:54px;width:130px;margin-left:-65px}
+  .vu-app[data-step="model"] .vu-ui-model{font-size:13px}
+  .vu-app[data-step="model"] .vu-lock-clock{font-size:30px}
+  .vu-app[data-step="model"] .vu-sb,.vu-app[data-step="model"] .vu-lock-btn,.vu-app[data-step="model"] .vu-lock-date{display:none}
+  .vu-app[data-step="model"] .vu-phone{--d:10px}
+  .vu-app[data-step="details"] .vu-stage,.vu-app[data-step="result"] .vu-stage{display:none}
+  .vu-panel{padding:22px 18px;border-radius:26px;min-height:0}
+  .vu-models{grid-template-columns:repeat(3,minmax(0,1fr));max-height:290px}
+  .vu-models button{padding:12px 6px;font-size:14.5px}
+}
+@media (max-width:420px){
+  .vu-faults{grid-template-columns:minmax(0,1fr)}
+  .vu-faults button{min-height:52px}
+  .vu-offers strong{font-size:34px}
+  .vu-actions{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:reduce){
+  .vu-hot{animation:none}
+  .vu-step.active{animation:none}
+}
+
+/* ---------- versione compatta (19/10): tutto in una schermata ---------- */
+.vu-panel{min-height:0;padding:24px 26px}
+.vu-q{margin:0 0 12px!important;font-size:clamp(24px,2.6vw,32px)!important;line-height:1.05!important;letter-spacing:-.035em!important;text-align:left!important}
+.vu-head{display:flex;align-items:center;gap:10px}
+.vu-head .vu-q{margin:0!important}
+.vu-head .vu-back{margin:0;width:34px;height:34px;border-radius:50%;border:1px solid #dfe6df;font-size:16px;flex:none}
+.vu-mini{margin:6px 0 12px!important;font-size:13px!important;line-height:1.35;color:#5f6b62;text-align:left!important}
+.vu-step[data-step="model"] .vu-mini{margin:8px 0 0!important}
+
+/* rotella delle serie */
+.vu-wheel{position:relative;display:flex;gap:4px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:6px 0 10px;margin:0 -26px;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent)}
+.vu-wheel::-webkit-scrollbar{display:none}
+.vu-wheel-pad{flex:0 0 calc(50% - 34px)}
+.vu-wheel button{flex:0 0 68px;scroll-snap-align:center;appearance:none;border:0;background:none;font:inherit;cursor:pointer;
+  font-size:30px;font-weight:850;letter-spacing:-.04em;line-height:1;color:#b9c4bb;padding:8px 0;border-radius:18px;transition:color .2s,transform .25s;
+  display:flex;flex-direction:column;align-items:center;gap:3px;-webkit-tap-highlight-color:transparent}
+.vu-wheel button small{font-size:9px;font-weight:700;letter-spacing:0;color:#9aa69d;white-space:nowrap}
+.vu-wheel button[data-series="altro"]{font-size:18px}
+.vu-wheel button.near{color:#0b1711;transform:scale(1.18)}
+.vu-wheel button[aria-selected="true"]{color:#0f7d3b}
+.vu-wheel::after{content:"";position:sticky;left:50%;flex:none}
+
+/* pulsanti a segmenti */
+.vu-seg{display:flex;gap:6px;flex-wrap:wrap}
+.vu-seg button{flex:1 1 0;min-width:max-content;appearance:none;font:inherit;font-size:14px;font-weight:750;cursor:pointer;padding:10px 10px;border-radius:12px;
+  border:1px solid #dfe6df;background:#f6f7f3;color:#0b1711;white-space:nowrap;transition:background .15s,border-color .15s,transform .12s;-webkit-tap-highlight-color:transparent}
+.vu-seg button:hover{border-color:#0f7d3b}
+.vu-seg button:active{transform:scale(.96)}
+.vu-seg button.selected{background:#07100b;border-color:#07100b;color:#fff}
+.vu-seg--variant{margin-bottom:8px}
+.vu-seg--variant button.selected{background:linear-gradient(135deg,#0f7d3b,#25a84e);border-color:#0f7d3b}
+#vuStorage:not([hidden]){animation:vuIn .3s}
+#vuStorage button{background:#fff;border-color:#cfd8cf}
+
+.vu-detect{margin:0 0 12px;padding:10px 12px;border-radius:16px;background:#f3f8f1;border:1px solid #dfe6df}
+.vu-detect p{margin:0 0 8px!important;font-size:13px!important;font-weight:700;color:#16301f;text-align:left!important}
+.vu-detect button{background:#fff}
+
+/* guasti: chip piccoli su tre colonne */
+.vu-faults{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:4px}
+.vu-faults button{min-height:44px;padding:8px 6px;justify-content:center;align-items:center;text-align:center;font-size:13.5px;font-weight:750;border-radius:12px;line-height:1.15}
+.vu-faults button::after{display:none}
+.vu-faults button[data-fault="power"]{grid-column:auto}
+.vu-faults button[aria-pressed="true"]{color:#b4232a}
+.vu-cta{margin-top:12px;min-height:52px!important}
+
+/* com'è messo: righe compatte */
+.vu-row{margin-top:12px}
+.vu-label{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px;font-size:14px;font-weight:800;color:#0b1711}
+.vu-label small{font-size:11px;font-weight:600;color:#7a867d;text-align:right}
+.vu-row .vu-seg button{padding:9px 6px;font-size:13px}
+
+/* risultato */
+.vu-result-head{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.vu-result h2{margin:0 0 10px!important;font-size:24px!important}
+.vu-offers{margin:0 0 10px}
+.vu-offers article{padding:14px}
+.vu-offers strong{font-size:clamp(30px,3.6vw,42px)}
+.vu-note{font-size:13.5px}
+.vu-result .vu-link{margin-top:6px}
+.vu-result .trade-v34-fineprint{margin-top:6px;font-size:11.5px}
+
+@media (max-width:860px){
+  body.v28-final .vu-hero{padding:16px 0 10px!important;background:none!important}
+  body.v28-final .vu-hero h1{font-size:30px!important;margin:2px 0 0!important}
+  body.v28-final .vu-hero .eyebrow,body.v28-final .vu-hero .trade-v34-lead,body.v28-final .vu-hero .trade-v34-trust{display:none!important}
+  .vu-app{gap:0}
+  .vu-stage{border-radius:26px 26px 0 0}
+  .vu-panel{border-radius:0 0 26px 26px;border-top:0;padding:16px 16px 18px;box-shadow:0 24px 50px rgba(11,23,17,.08)}
+  .vu-wheel{margin:0 -16px}
+  .vu-stage-bar{position:absolute;left:0;right:0;bottom:0;padding:0 12px 10px}
+  .vu-hint{font-size:11.5px}
+  .vu-flip{padding:7px 12px;font-size:12px}
+  .vu-floor{bottom:26px}
+  .vu-scene{height:300px;padding:10px 0 34px}
+  .vu-phone{--w:132px;--h:272px;--r:25px}
+  .vu-app[data-step="model"] .vu-scene{height:248px;padding:8px 0 34px}
+  .vu-app[data-step="model"] .vu-phone{--w:104px;--h:214px;--r:21px}
+  .vu-app[data-step="details"] .vu-stage,.vu-app[data-step="result"] .vu-stage{display:block}
+  .vu-app[data-step="details"] .vu-scene,.vu-app[data-step="result"] .vu-scene{height:190px;padding:8px 0 30px}
+  .vu-app[data-step="details"] .vu-phone,.vu-app[data-step="result"] .vu-phone{--w:82px;--h:168px;--r:17px;--d:9px}
+  .vu-app[data-step="details"] .vu-stage-bar,.vu-app[data-step="result"] .vu-stage-bar{display:none}
+  .vu-app[data-step="details"] .vu-ui > *:not(.vu-lock-clock),.vu-app[data-step="result"] .vu-ui > *:not(.vu-lock-clock){display:none}
+  .vu-app[data-step="details"] .vu-lock-clock,.vu-app[data-step="result"] .vu-lock-clock{font-size:22px}
+  .vu-ui-model{font-size:15px}
+  .vu-lock-clock{font-size:36px}
+  .vu-lock-date{font-size:9px}
+  .vu-ui-status{font-size:10px;padding:4px 9px}
+  .vu-sb{font-size:8.5px;top:7px}
+  .vu-lock-btn{width:18px;height:18px}
+  .vu-hot{width:26px;height:26px;margin:-13px 0 0 -13px}
+  .vu-hot::before{inset:7px}
+  .vu-hot.on::before{line-height:22px;font-size:11px}
+  .vu-progress{margin-bottom:12px}
+  .vu-seg button{padding:9px 6px;font-size:13.5px}
+  .vu-row .vu-seg{flex-wrap:nowrap}
+  .vu-row .vu-seg button{min-width:0;padding:9px 2px;font-size:12.5px}
+  .vu-offers strong{font-size:30px}
+  .vu-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .vu-actions .btn{min-height:48px;font-size:14.5px}
+}
+
+/* misure per stare in una schermata di iPhone (circa 390 x 660 visibili) */
+@media (max-width:860px){
+  .vu-app[data-step="model"] .vu-scene{height:190px;padding:6px 0 10px}
+  .vu-app[data-step="model"] .vu-phone{--w:84px;--h:172px;--r:17px;--d:8px}
+  .vu-app[data-step="model"] .vu-stage-bar,.vu-app[data-step="model"] .vu-ui > *:not(.vu-lock-clock):not(.vu-ui-model){display:none}
+  .vu-app[data-step="model"] .vu-lock-clock{font-size:22px}
+  .vu-app[data-step="model"] .vu-floor{bottom:6px}
+  .vu-scene{height:262px;padding:16px 0 40px}
+  .vu-phone{--w:100px;--h:206px;--r:20px;--d:10px}
+  .vu-lock-clock{font-size:30px}
+  .vu-ui-model{font-size:13px}
+  .vu-app[data-step="details"] .vu-scene,.vu-app[data-step="result"] .vu-scene{height:120px;padding:6px 0 6px}
+  .vu-app[data-step="details"] .vu-phone,.vu-app[data-step="result"] .vu-phone{--w:52px;--h:106px;--r:11px;--d:6px}
+  .vu-app[data-step="details"] .vu-lock-clock,.vu-app[data-step="result"] .vu-lock-clock{font-size:13px}
+  .vu-app[data-step="details"] .vu-floor,.vu-app[data-step="result"] .vu-floor{bottom:2px;width:90px;margin-left:-45px}
+  .vu-app[data-step="details"] .vu-stage-glow,.vu-app[data-step="result"] .vu-stage-glow{width:200px;height:200px;margin:-100px 0 0 -100px}
+  .vu-detect{padding:8px 10px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .vu-detect p{margin:0!important;font-size:12px!important;flex:0 0 74px;line-height:1.2}
+  .vu-detect .vu-seg{flex:1;flex-wrap:nowrap;gap:4px}
+  .vu-detect .vu-seg button{min-width:0;padding:8px 2px;font-size:12.5px}
+  .vu-q{font-size:23px!important;margin-bottom:4px!important}
+  .vu-wheel{padding:2px 0 6px}
+  .vu-wheel button{font-size:27px;padding:6px 0}
+  .vu-seg--variant{margin-bottom:6px}
+  .vu-step[data-step="model"] .vu-mini{display:none}
+  .vu-mini--faults{display:none}
+  .vu-head{margin-bottom:10px}
+  .vu-faults button{min-height:42px;font-size:13px}
+  .vu-row{margin-top:8px}
+  .vu-label{margin-bottom:4px;font-size:13.5px}
+  .vu-result h2{font-size:20px!important;margin-bottom:8px!important}
+  .vu-result-head{flex-direction:row;align-items:center;flex-wrap:wrap;gap:8px}
+  .vu-result-head .trade-v35-interest-badge{font-size:11px!important;padding:6px 10px!important}
+  .vu-pills span:not(.problem):not(.ok){display:none}
+  .vu-offers article{padding:12px}
+  .vu-offers span{font-size:12px}
+}
+
+/* revisione: [hidden] vince sempre, riepilogo modello, suggerimento ruota */
+.vu-app [hidden]{display:none!important}
+.vu-chosen{margin:0 0 0 auto!important;padding:5px 10px!important;min-height:0!important;border-radius:999px!important;border:1px solid #dfe6df!important;background:#f4f7f4!important;color:#1f2a22!important;font-size:12px!important;font-weight:600;white-space:nowrap;flex:none;width:auto!important}
+.vu-chosen::after{content:" ✎";opacity:.55}
+.vu-wheel-hint{display:block;width:100%;text-align:center;font-size:13px;color:#5f6b62;padding:6px 0}
+.vu-result .vu-note{margin:14px 0 6px!important;padding:10px 12px;border-radius:14px;background:#f4f7f4;border:1px solid #e3eae3;font-size:13.5px!important;line-height:1.45;color:#33413a;text-align:center!important}
+.vu-result .vu-link{display:block;margin:6px auto 0}
+
+/* retro più vero: blocco fotocamere in rilievo, obiettivi sporgenti, vetro con grana e bordi */
+.vu-phone{--bz:calc(var(--d) * .34)}
+.vu-backface,.vu-cams,.vu-cams .l{transform-style:preserve-3d}
+.vu-cams{transform:translateZ(var(--bz));box-shadow:inset 0 0 0 1px rgba(255,255,255,.32),inset 0 -2px 3px rgba(0,0,0,.15)!important}
+.vu-cams .vu-bl{position:absolute;inset:0;border-radius:inherit;background:var(--frame2);filter:brightness(var(--bl,1));pointer-events:none}
+.vu-cams .k1{transform:translateZ(calc(var(--bz) * -.25));--bl:1.05}
+.vu-cams .k2{transform:translateZ(calc(var(--bz) * -.5));--bl:.92}
+.vu-cams .k3{transform:translateZ(calc(var(--bz) * -.75));--bl:.8}
+.vu-cams .k4{transform:translateZ(calc(var(--bz) * -.98));--bl:.7;box-shadow:0 2px 6px rgba(0,0,0,.4),0 0 1px rgba(0,0,0,.5)}
+.vu-cams .l{transform:translateZ(calc(var(--d) * .16))}
+.vu-cams .l .lr{position:absolute;inset:-5%;border-radius:50%;background:radial-gradient(circle,#0b0c0d 62%,var(--frame2) 64%,var(--frame) 80%,var(--frame2) 100%);transform:translateZ(calc(var(--d) * -.08))}
+.vu-cams .l .lr2{inset:-8%;transform:translateZ(calc(var(--d) * -.16));filter:brightness(.75)}
+.vu-backface{
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(160deg,rgba(255,255,255,.2),rgba(255,255,255,0) 38%,rgba(0,0,0,0) 70%,rgba(0,0,0,.1)),
+    var(--back);
+  box-shadow:inset 0 0 0 2px var(--frame),inset 0 0 0 3px rgba(0,0,0,.25),inset 0 0 calc(var(--w) * .08) rgba(0,0,0,.16),inset 0 calc(var(--w) * .02) calc(var(--w) * .04) rgba(255,255,255,.18)}
+.vu-phone[data-finish="color"] .vu-backface{background:
+    linear-gradient(160deg,rgba(255,255,255,.34),rgba(255,255,255,0) 34%,rgba(0,0,0,0) 72%,rgba(0,0,0,.08)),
+    var(--back)}
+.vu-phone[data-finish="color"] .vu-sheen{opacity:1;filter:brightness(1.2)}
+/* i punti da toccare sul retro stanno sopra il blocco fotocamere */
+.vu-backface .vu-hot{transform:translateZ(calc(var(--bz) + var(--d) * .3))}
+.vu-backface .vu-hot.on{transform:translateZ(calc(var(--bz) + var(--d) * .3)) scale(1.08)}
+/* flash fuori dal blocco: appoggiato sul vetro */
+.vu-phone[data-look="dual-vertical"] .vu-cams .fl,.vu-phone[data-look="se"] .vu-cams .fl,.vu-phone[data-look^="single"] .vu-cams .fl{transform:translateZ(calc(var(--bz) * -1 + .5px))}
+.vu-phone[data-look="dual-vertical"] .vu-cams{background:linear-gradient(90deg,rgba(255,255,255,.42),rgba(255,255,255,.08) 55%,rgba(0,0,0,.14)),var(--back)}
+
+/* chiusura comune pagina (copiata da glass.css finché non va online la revisione completa) */
+section.cta-finale{padding:56px 0 64px!important;background:transparent!important}
+body .cta-finale .v28-store-card{grid-template-columns:minmax(0,1fr) auto!important;text-align:left!important;gap:28px!important}
+body .cta-finale .v28-store-card p{margin-left:0!important}
+body .cta-finale .cta-rating{font-size:14.5px!important;font-weight:650;margin:0 0 12px!important;color:#fff!important}
+body .cta-finale .cta-rating span{color:#f5c84b;letter-spacing:1px;margin-right:4px}
+body .cta-finale .cta-where{margin-top:14px!important;font-size:14.5px!important;color:#b9c7bd!important}
+body .cta-finale .cta-where a{color:#fff;text-decoration:underline;text-underline-offset:3px}
+.cta-actions{display:grid;gap:10px;min-width:260px}
+.cta-actions .btn{justify-content:center!important;width:100%}
+body .cta-finale .cta-actions .btn.secondary{background:rgba(255,255,255,.08)!important;color:#fff!important;border:1px solid rgba(255,255,255,.28)!important;box-shadow:none!important}
+@media (max-width:860px){
+  body .cta-finale .v28-store-card{grid-template-columns:minmax(0,1fr)!important;text-align:center!important}
+  body .cta-finale .v28-store-card p{margin-left:auto!important;margin-right:auto!important}
+  .cta-actions{min-width:0}
+  body.v28-final .footer .hours > div{display:grid!important;grid-template-columns:auto 1fr!important;align-items:baseline!important;gap:2px 12px!important;padding:9px 0!important;text-align:left!important}
+  body.v28-final .footer .hours > div > strong{grid-column:1!important;grid-row:1 / span 2!important;text-align:left!important;white-space:nowrap}
+  body.v28-final .footer .hours > div > span{grid-column:2!important;text-align:right!important}
+  body.v28-final .footer .footer-grid > .footer-col.footer-links-clean{display:grid!important;grid-template-columns:1fr 1fr;gap:6px 14px!important}
+  body.v28-final .footer .footer-grid > .footer-col.footer-links-clean > h4{grid-column:1 / -1}
+
+/* com'è messo: una domanda alla volta, pulsanti grandi */
+.vu-step[data-step="details"] .vu-head{align-items:center}
+.vu-qcount{margin-left:auto;flex:none;font-size:12px;font-weight:750;color:#7a867d;white-space:nowrap}
+.vu-row[data-q]{margin-top:4px}
+.vu-row[data-q]:not([hidden]){animation:vuIn .3s}
+.vu-qhint{margin:0 0 12px!important;font-size:13px!important;color:#5d6a61!important;text-align:left!important}
+.vu-seg--big{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.vu-row .vu-seg--big button{min-width:0;min-height:54px;padding:12px 8px;font-size:15px;white-space:normal;line-height:1.15}
+.vu-seg--big button:last-child:nth-child(odd){grid-column:1 / -1}
+@media (max-width:860px){
+  .vu-row .vu-seg.vu-seg--big button{padding:12px 6px;font-size:15px;min-height:52px}
+  .vu-step[data-step="details"] .vu-q{font-size:21px!important;line-height:1.15}
+  .vu-qhint{display:block!important}
+}
+@media (hover:none){.vu-seg button:hover{border-color:#dfe6df}.vu-seg button.selected:hover{border-color:#07100b}}
